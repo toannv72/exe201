@@ -18,16 +18,16 @@ import ComHeaderStaff from '../Components/ComHeaderStaff/ComHeaderStaff'
 
 const options = [
     {
-        label: "Gỗ",
-        value: "Gỗ"
+        label: "Khám bệnh",
+        value: "Vet Visit"
     },
     {
-        label: "Nhựa",
-        value: "Nhựa"
+        label: "Làm đẹp",
+        value: "Grooming"
     },
     {
-        label: "Kim Loại",
-        value: "Kim loại"
+        label: "Vắc-xin",
+        value: "Vaccination"
     },
 ];
 
@@ -41,11 +41,11 @@ export default function CreateProduct() {
         name: yup.string().required(textApp.CreateProduct.message.name),
         price: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
         price1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
-        reducedPrice: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
-        reducedPrice1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
-        quantity: yup.number().min(1, textApp.CreateProduct.message.quantityMin).typeError(textApp.CreateProduct.message.quantity).required('Số lượng không được để trống'),
-        shape: yup.string().required(textApp.CreateProduct.message.shape),
-        material: yup.array().required(textApp.CreateProduct.message.material),
+        // reducedPrice: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
+        // reducedPrice1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
+        // quantity: yup.number().min(1, textApp.CreateProduct.message.quantityMin).typeError(textApp.CreateProduct.message.quantity).required('Số lượng không được để trống'),
+        // shape: yup.string().required(textApp.CreateProduct.message.shape),
+        category: yup.string().required(textApp.CreateProduct.message.category),
         description: yup.string().required(textApp.CreateProduct.message.description),
     })
     const createProductRequestDefault = {
@@ -56,12 +56,13 @@ export default function CreateProduct() {
         resolver: yupResolver(CreateProductMessenger),
         defaultValues: {
             name: "",
-            quantity: 1,
-            models: "",
-            shape: "",
-            material: "",
-            accessory: "",
-            image: [],
+            price: "",
+            // quantity: 1,
+            // models: "",
+            // shape: "",
+            category: "",
+            // accessory: "",
+            image: "",
             description: "",
         },
         values: createProductRequestDefault
@@ -99,7 +100,7 @@ export default function CreateProduct() {
             return
         }
 
-        if (data.material.length === 0) {
+        if (data.category.length === 0) {
             api["error"]({
                 message: textApp.CreateProduct.Notification.m4.message,
                 description:
@@ -182,9 +183,9 @@ export default function CreateProduct() {
 
     const handleValueChangeSelect = (e, value) => {
         if (value.length === 0) {
-            setValue("material", null, { shouldValidate: true });
+            setValue("category", null, { shouldValidate: true });
         } else {
-            setValue("material", value, { shouldValidate: true });
+            setValue("category", value, { shouldValidate: true });
         }
     };
     return (
@@ -226,7 +227,7 @@ export default function CreateProduct() {
                                 />
 
                             </div>
-                            <div>
+                            {/* <div>
                                 <ComNumber
                                     label={textApp.CreateProduct.label.reducedPrice}
                                     placeholder={textApp.CreateProduct.placeholder.reducedPrice}
@@ -239,8 +240,8 @@ export default function CreateProduct() {
                                     required
                                 />
 
-                            </div>
-                            <div>
+                            </div> */}
+                            {/* <div>
                                 <ComNumber
                                     label={textApp.CreateProduct.label.quantity}
                                     placeholder={textApp.CreateProduct.placeholder.quantity}
@@ -251,7 +252,7 @@ export default function CreateProduct() {
                                     required
                                 />
 
-                            </div>
+                            </div> */}
 
                
                             <div className="">
@@ -260,16 +261,16 @@ export default function CreateProduct() {
                                     style={{
                                         width: '100%',
                                     }}
-                                    label={textApp.CreateProduct.label.material}
-                                    placeholder={textApp.CreateProduct.placeholder.material}
+                                    label={textApp.CreateProduct.label.category}
+                                    placeholder={textApp.CreateProduct.placeholder.category}
                                     required
                                     onChangeValue={handleValueChangeSelect}
                                     options={options}
-                                    {...register("material")}
+                                    {...register("category")}
 
                                 />
                             </div>
-                            <div className="sm:col-span-2">
+                            {/* <div className="sm:col-span-2">
                                 <ComInput
                                     label={textApp.CreateProduct.label.shape}
                                     placeholder={textApp.CreateProduct.placeholder.shape}
@@ -277,7 +278,7 @@ export default function CreateProduct() {
                                     type="text"
                                     {...register("shape")}
                                 />
-                            </div>
+                            </div> */}
 
                  
                             <div className="sm:col-span-2">

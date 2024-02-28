@@ -81,7 +81,7 @@ export default function ComHeaderStaff() {
             <Card className="h-[calc(100vh)]  w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
               <div className="mb-2 p-4">
                 <Typography variant="h5" color="blue-gray">
-                  Lồng chim
+                  Dịch vụ
                 </Typography>
               </div>
               <List>
@@ -125,7 +125,7 @@ export default function ComHeaderStaff() {
                         <ShoppingCartIcon className="h-5 w-5" />
                       </ListItemPrefix>
                       <Typography color="blue-gray" className="mr-auto font-normal">
-                        Sản phẩm
+                         Dịch vụ
                       </Typography>
                     </AccordionHeader>
                   </ListItem>

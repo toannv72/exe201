@@ -5,7 +5,7 @@ export const textApp = {
         button: {
             login: "Đăng nhập",
             reissue: "Đăng ký",
-            createProduct: "Tạo sản phẩm"
+            createProduct: "Tạo dịch vụ"
         }
     },
     Login: {
@@ -54,49 +54,49 @@ export const textApp = {
         }
     },
     CreateProduct: {
-        pageTitle: "Tạo sản phẩm",
+        pageTitle: "Tạo dịch vụ",
         label: {
-            name: "Tên sản phẩm",
+            name: "Tên dịch vụ",
             price: "Giá tiền gốc",
             reducedPrice: "Giá tiền giảm",
             shape: "Hình dáng",
-            quantity: "Số lượng sản phẩm",
+            quantity: "Số lượng dịch vụ",
             detail: "Chi tiết",
             models: "Mẫu mã",
-            material: "Chất liệu",
+            category: "Phân loại",
             accessory: "Phụ kiền",
             sold: "Đã bán",
             image: 'Hình ảnh',
-            description: "Chi tiết sản phẩm",
+            description: "Chi tiết dịch vụ",
         },
         placeholder: {
-            name: "Vui lòng nhập tên sản phẩm",
-            price: "Vui lòng nhập giá tiền sản phẩm",
-            quantity: "Vui lòng nhập số lượng sản phẩm",
-            shape: "Vui lòng nhập hình dáng sản phẩm",
-            detail: "Vui lòng nhập chi tiết sản phẩm",
-            models: "Vui lòng nhập mẫu mã sản phẩm",
-            material: "Vui lòng nhập chất liệu sản phẩm",
+            name: "Vui lòng nhập tên dịch vụ",
+            price: "Vui lòng nhập giá tiền dịch vụ",
+            quantity: "Vui lòng nhập số lượng dịch vụ",
+            shape: "Vui lòng nhập hình dáng dịch vụ",
+            detail: "Vui lòng nhập chi tiết dịch vụ",
+            models: "Vui lòng nhập mẫu mã dịch vụ",
+            category: "Vui lòng nhập phân loại dịch vụ",
             accessory: "Vui lòng nhập phụ kiền",
             sold: "Vui lòng nhập số lượng đã bán",
             image: "Vui lòng thêm hình ảnh",
             description: "Vui lòng nhập mô tả",
         },
         message: {
-            name: "Tên sản phẩm không được để trống",
-            price: "Giá sản phẩm không được để trống",
+            name: "Tên dịch vụ không được để trống",
+            price: "Giá dịch vụ không được để trống",
             priceMin: "phải lớn hơn hoặc bằng 1",
             shape: "Yêu cầu này là bắt buộc",
             priceDecimal: "Số tiền không được là số thập phân ",
-            quantity: "Số lượng sản phẩm không được để trống",
+            quantity: "Số lượng dịch vụ không được để trống",
             quantityMin: "phải lớn hơn hoặc bằng 1",
-            detail: "Chi tiết sản phẩm không được để trống",
-            models: "Mẫu mã sản phẩm không được để trống",
-            material: "Chất liệu sản phẩm không được để trống",
+            detail: "Chi tiết dịch vụ không được để trống",
+            models: "Mẫu mã dịch vụ không được để trống",
+            category: "phân loại dịch vụ không được để trống",
             accessory: "Phụ kiền không được để trống",
-            sold: "Sản phẩm đã bán không được để trống",
-            image: "Hình ảnh sản phẩm không được để trống",
-            description: "Mô tả sản phẩm không được để trống",
+            sold: "dịch vụ đã bán không được để trống",
+            image: "Hình ảnh dịch vụ không được để trống",
+            description: "Mô tả dịch vụ không được để trống",
         },
         Notification: {
             m1: {
@@ -105,19 +105,19 @@ export const textApp = {
             },
             m2: {
                 message: "Thành công",
-                description: "Tạo sản phẩm thành công!"
+                description: "Tạo dịch vụ thành công!"
             },
             m3: {
                 message: "Lỗi",
-                description: "Tạo sản phẩm không thành công!"
+                description: "Tạo dịch vụ không thành công!"
             },
             m4: {
                 message: "Lỗi",
-                description: "Vui lòng chọn Chất liệu sản phẩm!"
+                description: "Vui lòng chọn phân loại dịch vụ!"
             },
             m5: {
                 message: "Lỗi",
-                description: "Vui lòng chọn ít nhất một ảnh cho sản phẩm!"
+                description: "Vui lòng chọn ít nhất một ảnh cho dịch vụ!"
             },
             m6: {
                 message: "Lỗi",
@@ -140,7 +140,7 @@ export const textApp = {
     TableProduct: {
         title: {
             change: "Chỉnh sửa",
-            delete: 'Xóa sản phẩm'
+            delete: 'Xóa dịch vụ'
         },
         modal: {
             cancel: "Hủy",
@@ -150,7 +150,7 @@ export const textApp = {
         Notification: {
             delete: {
                 message: "Thành công!",
-                description: "Đã xóa sản phẩm!"
+                description: "Đã xóa dịch vụ!"
             },
             deleteError: {
                 message: "Thất bại!",
@@ -158,15 +158,15 @@ export const textApp = {
             },
             change: {
                 message: "Thành công!",
-                description: "Chỉnh sửa sản phẩm thành công!"
+                description: "Chỉnh sửa dịch vụ thành công!"
             },
             update: {
                 message: "Thành công!",
-                description: "Chỉnh sửa sản phẩm thành công!"
+                description: "Chỉnh sửa dịch vụ thành công!"
             }, 
             updateFail: {
                 message: "Thất bại!",
-                description: "Chỉnh sửa sản phẩm thất bại!"
+                description: "Chỉnh sửa dịch vụ thất bại!"
             }
         }
     },
@@ -181,7 +181,7 @@ export const textApp = {
         },
         page: {
             quantity: "Số lượng",
-            material: "Chất Liệu: ",
+            category: "phân loại: ",
             shape: "Hình Dáng :"
         },
         message: {
@@ -196,11 +196,11 @@ export const textApp = {
             },
             m2: {
                 message: "Thành công!",
-                description: "Cập nhật số lượng sản phẩm thành công"
+                description: "Cập nhật số lượng dịch vụ thành công"
             },
             m3: {
                 message: "Thất bại!",
-                description: "Đã có sản phẩm trong giỏ hàng"
+                description: "Đã có dịch vụ trong giỏ hàng"
             },
         }
     },
@@ -215,7 +215,7 @@ export const textApp = {
         aboutUs: {
             title: "Thông tin",
             infor: "Về chúng tôi",
-            info1: "Sản phẩm",
+            info1: "dịch vụ",
             info2: "Chính sách bảo mật",
             info3: "Điều khoản sử dụng"
         },
@@ -230,18 +230,18 @@ export const textApp = {
         }
     },
     HeaderAdmin: {
-        product: "Sản phẩm",
+        product: "dịch vụ",
     },
     Header: {
         home: "Trang chủ",
         category:"Danh mục",
-        allProduct:"Sản phẩm",
+        allProduct:"dịch vụ",
         required:"Đặt hàng theo yêu cầu",
         search: "Tìm kiếm...",
     },
     Home: {
         getAll: "Xem thêm...",
-        text: "Sản phẩm mới"
+        text: "dịch vụ mới"
     },
     Payment: {
         title: "Thanh toán",
@@ -274,7 +274,7 @@ export const textApp = {
                 emailError: "Mail không hợp lệ",
             },
         },
-        text: "Sản phẩm mới",
+        text: "dịch vụ mới",
         payments:"Hình thức thanh toán: ",
         orderButton:"Đặt hàng",
         cash:"Tiền mặt",

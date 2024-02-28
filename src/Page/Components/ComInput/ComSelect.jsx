@@ -107,7 +107,7 @@ const ComSelect = React.forwardRef(
               ref={ref}
               // size="large"
               status={error && 'error'}
-              mode="multiple"
+              
               value={value}
               onChange={onlyChangeWithCondition}
               // status={error && 'error'}
