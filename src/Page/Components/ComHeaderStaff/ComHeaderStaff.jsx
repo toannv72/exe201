@@ -1,23 +1,14 @@
-import { Fragment, useEffect, useState } from 'react'
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
+import { useState } from 'react'
+import { Dialog} from '@headlessui/react'
 import {
   Bars3Icon,
-  ShoppingBagIcon,
-  PresentationChartBarIcon,
-
-  UserCircleIcon,
-  Cog6ToothIcon,
-  InboxIcon,
   PowerIcon,
   ClipboardDocumentListIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, } from '@heroicons/react/20/solid'
-import { ComLink } from '../ComLink/ComLink'
 import { Link, useNavigate } from 'react-router-dom'
-import { getData } from '../../../api/api'
 import { Affix } from 'antd'
-import { useCookies } from 'react-cookie'
 import images from '../../../img'
 import { routs } from '../../../constants/ROUT'
 import { AccordionBody, AccordionHeader, ListItem, ListItemPrefix, Typography } from '@material-tailwind/react'
@@ -34,9 +25,6 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useStorage } from '../../../hooks/useLocalStorage'
 
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function ComHeaderStaff() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -69,7 +57,7 @@ export default function ComHeaderStaff() {
             </button>
           </div>
           <div className="flex flex-1 justify-center">
-            <img className="h-16 w-auto" src={images.logo} alt="" />
+            <img className="h-16 w-auto m-2" src={images.logo} alt="" />
           </div>
 
          
@@ -81,7 +69,7 @@ export default function ComHeaderStaff() {
             <Card className="h-[calc(100vh)]  w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
               <div className="mb-2 p-4">
                 <Typography variant="h5" color="blue-gray">
-                  Lồng chim
+                  Cửa hàng
                 </Typography>
               </div>
               <List>
@@ -98,8 +86,7 @@ export default function ComHeaderStaff() {
                     </ListItemSuffix>
                   </ListItem>
                 </Link>
-
-                <Link to={routs['/orderRequest'].link}>
+                {/* <Link to={routs['/orderRequest'].link}>
                   <ListItem>
                     <ListItemPrefix>
                       <ClipboardDocumentListIcon className="h-5 w-5" />
@@ -109,7 +96,7 @@ export default function ComHeaderStaff() {
                       <Chip value="" size="sm" variant="ghost" color="blue-gray" className="rounded-full" />
                     </ListItemSuffix>
                   </ListItem>
-                </Link>
+                </Link> */}
                 <Accordion
                   open={open === 3}
                   icon={

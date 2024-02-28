@@ -1,5 +1,5 @@
 const images = {
-    logo: require('./logo.svg').default,
+    logo: require('./Logo.jpg'),
     // noImage: require('~/assets/images/no-image.png'),
     // noImage1: require('~/assets/images/anh-bia.jpeg'),
     Home: [
@@ -27,6 +27,11 @@ const images = {
     ],
     avatar:require('./user.jpg'),
     discount:require('./discount.png'),
+    Home1:require('./homeImg/Frame 229.png'),
+    Home2:require('./homeImg/Group 260.png'),
+    Home3:require('./homeImg/Frame 241.png'),
+    LogoHome:require('./homeImg/Group 236.png'),
+    background:require('./homeImg/iPhone 15 Pro (2).png'),
     
 };
 
