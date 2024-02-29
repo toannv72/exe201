@@ -82,14 +82,14 @@ export default function CreateProduct() {
             });
             return
         }
-        if (data.reducedPrice % 1000 !== 0) {
-            api["error"]({
-                message: textApp.CreateProduct.Notification.m8.message,
-                description:
-                    textApp.CreateProduct.Notification.m8.description
-            });
-            return
-        }
+        // if (data.reducedPrice % 1000 !== 0) {
+        //     api["error"]({
+        //         message: textApp.CreateProduct.Notification.m8.message,
+        //         description:
+        //             textApp.CreateProduct.Notification.m8.description
+        //     });
+        //     return
+        // }
         if (!isInteger(data.price)) {
 
             api["error"]({
@@ -117,14 +117,14 @@ export default function CreateProduct() {
             return
         }
 
-        if (data.price <= data.reducedPrice) {
-            api["error"]({
-                message: textApp.CreateProduct.Notification.m6.message,
-                description:
-                    textApp.CreateProduct.Notification.m6.description
-            });
-            return
-        }
+        // if (data.price <= data.reducedPrice) {
+        //     api["error"]({
+        //         message: textApp.CreateProduct.Notification.m6.message,
+        //         description:
+        //             textApp.CreateProduct.Notification.m6.description
+        //     });
+        //     return
+        // }
 
         setDisabled(true)
         firebaseImgs(image)

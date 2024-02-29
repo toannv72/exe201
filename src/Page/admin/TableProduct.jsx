@@ -77,16 +77,16 @@ export default function TableProduct() {
     };
     const options = [
         {
-            label: "Gỗ",
-            value: "Gỗ"
+            label: "Khám bệnh",
+            value: "Vet Visit"
         },
         {
-            label: "Nhựa",
-            value: "Nhựa"
+            label: "Làm đẹp",
+            value: "Grooming"
         },
         {
-            label: "Kim Loại",
-            value: "Kim loại"
+            label: "Vắc-xin",
+            value: "Vaccination"
         },
     ];
 
