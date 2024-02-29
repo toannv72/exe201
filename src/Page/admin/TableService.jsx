@@ -247,7 +247,7 @@ export default function TableService() {
     }
     useEffect(() => {
         setTimeout(() => {
-            getData('/offers/getInformation/bf081171-4903-4ca2-0277-08dc33bf60b4', {})
+            getData('/providers/getInformation/0cb84163-3df2-4160-acd0-08dc39513829', {})
                 .then((data) => {
                     console.log(data.data.data.offerProviders);
                     setProducts(data.data.data.offerProviders)
@@ -447,8 +447,6 @@ export default function TableService() {
             key: 'category',
             render: (_, record) => (
                 <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{record.offerings.category}</p>
-                    <p>{record.offerings.category}</p>
                     <p>{record.offerings.category}</p>
                 </div>
             )
