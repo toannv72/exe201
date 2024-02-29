@@ -1,9 +1,5 @@
 const images = {
-<<<<<<< HEAD
     logo: require('./doglogo.svg').default,
-=======
-    logo: require('./Logo.jpg'),
->>>>>>> f7cdf34ca0d95a9dd0714c625dc128d52ab5b119
     // noImage: require('~/assets/images/no-image.png'),
     // noImage1: require('~/assets/images/anh-bia.jpeg'),
     Home: [

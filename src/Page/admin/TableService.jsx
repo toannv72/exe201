@@ -19,7 +19,7 @@ import moment from 'moment/moment';
 import ComHeaderStaff from '../Components/ComHeaderStaff/ComHeaderStaff';
 
 
-export default function TableProduct() {
+export default function TableService() {
     const [disabled, setDisabled] = useState(false);
     const [image, setImages] = useState([]);
     const [products, setProducts] = useState([]);
@@ -28,10 +28,8 @@ export default function TableProduct() {
     const [dataRun, setDataRun] = useState(false);
     const [productRequestDefault, setProductRequestDefault] = useState({});
     const [productPrice, setProductPrice] = useState(1000);
-    const [productReducedPrice, setProductReducedPrice] = useState(1000);
-    const [productQuantity, setProductQuantity] = useState(1);
     const [api, contextHolder] = notification.useNotification();
-    const [selectedMaterials, setSelectedMaterials] = useState();
+    const [selectedcategorys, setSelectedCategorys] = useState();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -47,31 +45,22 @@ export default function TableProduct() {
     };
     console.log(productRequestDefault);
     const showModalEdit = (e) => {
-        setSelectedMaterials(e.material)
-        setProductPrice(e.price)
-        setProductReducedPrice(e.reducedPrice)
-        setProductQuantity(e.quantity)
+        setSelectedCategorys(e.offerings.category)
+        setProductPrice(e.offerings.price)
         setProductRequestDefault({
-            name: e.name,
-            price: e.price,
-            price1: e.price,
-            reducedPrice1: e.reducedPrice,
-            reducedPrice: e.reducedPrice,
-            quantity: e.quantity,
-            detail: e.detail,
-            shape: e.shape,
-            models: e.models,
-            material: e.material,
-            accessory: e.accessory,
-            description: e.description,
-            id: e._id
+            serviceName: e.offerings.serviceName,
+            price: e.offerings.price,
+            price1: e.offerings.price,
+            category: e.offerings.category,
+            description: e.offerings.description,
+            offerId: e.offerings.offerId
         })
         setIsModalOpen(true);
     };
 
     const showModalDelete = (e) => {
         setProductRequestDefault({
-            id: e._id
+            offerId: e._offerId
         })
         setIsModalOpenDelete(true);
     };
@@ -102,14 +91,6 @@ export default function TableProduct() {
         setValue("price", value, { shouldValidate: true });
     };
 
-    const handleValueChange1 = (e, value) => {
-        setProductReducedPrice(value)
-        setValue("reducedPrice", value, { shouldValidate: true });
-    };
-    const handleValueChangeQuantity = (e, value) => {
-        setProductQuantity(value)
-        setValue("quantity", value, { shouldValidate: true });
-    };
     function formatCurrency(number) {
         // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
         if (typeof number === "number") {
@@ -121,27 +102,19 @@ export default function TableProduct() {
     }
     const CreateProductMessenger = yup.object({
 
-        name: yup.string().required(textApp.CreateProduct.message.name),
+        serviceName: yup.string().required(textApp.CreateProduct.message.name),
         price: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
         price1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
-        reducedPrice: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
-        reducedPrice1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
-        quantity: yup.number().min(0, textApp.CreateProduct.message.quantityMin).typeError(textApp.CreateProduct.message.quantity),
-        shape: yup.string().required(textApp.CreateProduct.message.shape),
-        material: yup.array().required(textApp.CreateProduct.message.material),
+        category: yup.string().required(textApp.CreateProduct.message.category),
         description: yup.string().required(textApp.CreateProduct.message.description),
     })
 
     const methods = useForm({
         resolver: yupResolver(CreateProductMessenger),
         defaultValues: {
-            name: "",
+            serviceName: "",
             price: "",
-            quantity: "",
-            detail: "",
-            material: [],
-            models: "",
-            accessory: "",
+            category: '',
             description: "",
         },
         values: productRequestDefault
@@ -159,14 +132,7 @@ export default function TableProduct() {
             });
             return
         }
-        if (data.reducedPrice % 1000 !== 0) {
-            api["error"]({
-                message: textApp.CreateProduct.Notification.m8.message,
-                description:
-                    textApp.CreateProduct.Notification.m8.description
-            });
-            return
-        }
+
         if (!isInteger(data.price)) {
 
             api["error"]({
@@ -177,21 +143,11 @@ export default function TableProduct() {
             return
         }
 
-        if (data.material.length === 0) {
+        if (data.category.length === 0) {
             api["error"]({
                 message: textApp.CreateProduct.Notification.m4.message,
                 description:
                     textApp.CreateProduct.Notification.m4.description
-            });
-            return
-        }
-
-
-        if (data.price <= data.reducedPrice) {
-            api["error"]({
-                message: textApp.CreateProduct.Notification.m6.message,
-                description:
-                    textApp.CreateProduct.Notification.m6.description
             });
             return
         }
@@ -202,10 +158,11 @@ export default function TableProduct() {
                 if (Array.isArray(image) && image.length === 0) {
                     const updatedData = {
                         ...data, // Giữ lại các trường dữ liệu hiện có trong data
+                        category:selectedcategorys
 
                     };
-
-                    putData(`/product`, productRequestDefault.id, updatedData, {})
+                    console.log(1111111111111,updatedData)
+                    putData(`/offers/updateOffers`, productRequestDefault.offerId, updatedData, {})
                         .then((dataS) => {
                             api["success"]({
                                 message: textApp.TableProduct.Notification.update.message,
@@ -226,9 +183,12 @@ export default function TableProduct() {
                 } else {
                     const updatedData = {
                         ...data, // Giữ lại các trường dữ liệu hiện có trong data
-                        image: dataImg, // Thêm trường images chứa đường dẫn ảnh
+                        image: dataImg[0], // Thêm trường images chứa đường dẫn ảnh
+                        category:selectedcategorys
                     };
-                    putData(`/product`, productRequestDefault.id, updatedData, {})
+                    console.log(1111111111111,updatedData)
+
+                    putData(`/offers/updateOffers`, productRequestDefault.offerId, updatedData, {})
                         .then((dataS) => {
                             api["success"]({
                                 message: textApp.TableProduct.Notification.change.message,
@@ -261,7 +221,7 @@ export default function TableProduct() {
 
     const deleteById = () => {
         setDisabled(true)
-        deleteData('product', productRequestDefault.id)
+        deleteData('/offers/offering/369e9a23-1bc7-46d0-30dd-08dc39436da9', productRequestDefault.offerId)
             .then((data) => {
                 setDisabled(false)
                 handleCancelDelete()
@@ -287,9 +247,10 @@ export default function TableProduct() {
     }
     useEffect(() => {
         setTimeout(() => {
-            getData('/product/staff', {})
+            getData('/offers/getInformation/bf081171-4903-4ca2-0277-08dc33bf60b4', {})
                 .then((data) => {
-                    setProducts(data?.data?.docs)
+                    console.log(data.data.data.offerProviders);
+                    setProducts(data.data.data.offerProviders)
                 })
                 .catch((error) => {
                     console.error("Error fetching items:", error);
@@ -405,128 +366,104 @@ export default function TableProduct() {
     const columns = [
 
         {
-            title: 'Ảnh sản phẩm',
-            dataIndex: 'image',
+            title: 'Ảnh dịch vụ',
+            dataIndex: 'offerings',
             key: 'img',
             fixed: 'left',
             render: (_, record) => (
 
                 <div className='flex items-center justify-center'>
-                    <img src={record.image} className='h-24 object-cover object-center   ' alt={record.image} />
+                    <img src={record.offerings.image} className='h-24 object-cover object-center   ' alt={record.image} />
                 </div>
             )
         },
         {
-            title: 'Tên sản phẩm',
-            dataIndex: 'name',
+            title: 'Tên dịch vụ',
+            dataIndex: 'offerings',
             width: 200,
-            key: 'name',
+            key: 'offerings',
             fixed: 'left',
-
             render: (_, record) => (
-
-                <div >
-                    <h1>{record.name}</h1>
+                <div>
+                    <h1>{record.offerings.serviceName}</h1>
                 </div>
             ),
-            ...getColumnSearchProps('name', 'tên sản phẩm'),
         },
         {
             title: 'Giá Tiền',
             width: 150,
-            dataIndex: 'price',
+            dataIndex: 'offerings',
             key: 'price',
             sorter: (a, b) => a.price - b.price,
             render: (_, record) => (
 
                 <div >
-                    <h1>{formatCurrency(record.price)}</h1>
+                    <h1>{formatCurrency(record.offerings.price)}</h1>
                 </div>
             )
         },
-        {
-            title: 'Giá tiền đã giảm',
-            width: 150,
-            dataIndex: 'reducedPrice',
-            key: 'reducedPrice',
-            sorter: (a, b) => a.reducedPrice - b.reducedPrice,
-            render: (_, record) => (
+        // {
+        //     title: 'Giá tiền đã giảm',
+        //     width: 150,
+        //     dataIndex: 'reducedPrice',
+        //     key: 'reducedPrice',
+        //     sorter: (a, b) => a.reducedPrice - b.reducedPrice,
+        //     render: (_, record) => (
 
-                <div >
-                    <h1>{formatCurrency(record.reducedPrice)}</h1>
-                </div>
-            )
-        }, {
-            title: 'Đã bán',
-            width: 100,
-            dataIndex: 'sold',
-            key: 'sold',
-            sorter: (a, b) => a.sold - b.sold,
-        },
+        //         <div >
+        //             <h1>{formatCurrency(record.reducedPrice)}</h1>
+        //         </div>
+        //     )
+        // }, 
+        // {
+        //     title: 'Đã bán',
+        //     width: 100,
+        //     dataIndex: 'sold',
+        //     key: 'sold',
+        //     sorter: (a, b) => a.sold - b.sold,
+        // },
+        // {
+        //     title: 'Số lượng',
+        //     width: 100,
+        //     dataIndex: 'quantity',
+        //     key: 'quantity',
+        //     sorter: (a, b) => a.quantity - b.quantity,
+        // },
+        // {
+        //     title: 'Ngày chỉnh sửa',
+        //     dataIndex: 'updatedAt',
+        //     width: 110,
+        //     key: 'updatedAt',
+        //     sorter: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
+        //     render: (_, record) => (
+        //         <div className="text-sm text-gray-700 line-clamp-4">
+        //             <p>{moment(record.updatedAt).format('l')}</p>
+        //         </div>
+        //     )
+        // },
         {
-            title: 'Số lượng',
-            width: 100,
-            dataIndex: 'quantity',
-            key: 'quantity',
-            sorter: (a, b) => a.quantity - b.quantity,
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            width: 110,
-            key: 'createdAt',
-            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            title: 'Phân loại',
+            dataIndex: 'offerings',
+            key: 'category',
             render: (_, record) => (
                 <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{moment(record.createdAt).format('l')}</p>
+                    <p>{record.offerings.category}</p>
+                    <p>{record.offerings.category}</p>
+                    <p>{record.offerings.category}</p>
                 </div>
             )
         },
         {
-            title: 'Ngày chỉnh sửa',
-            dataIndex: 'updatedAt',
-            width: 110,
-            key: 'updatedAt',
-            sorter: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
-            render: (_, record) => (
-                <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{moment(record.updatedAt).format('l')}</p>
-                </div>
-            )
-        },
-        {
-            title: 'Chất liệu',
-            dataIndex: 'material',
-            key: 'material',
-            render: (_, record) => (
-                <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{record.material?.[0]}</p>
-                    <p>{record.material?.[1]}</p>
-                    <p>{record.material?.[2]}</p>
-                </div>
-            )
-        },
-        {
-            title: 'Chi tiết sản phẩm',
-            dataIndex: 'description',
+            title: 'Chi tiết dịch vụ',
+            dataIndex: 'offerings',
             key: 'description',
             width: 300,
-            ...getColumnSearchProps('description', "chi tiết"),
-            // render: (_, record) => (
+            render: (_, record) => (
 
-            //     <div className="text-sm text-gray-700 line-clamp-4">
-            //         <p className="text-sm text-gray-700 line-clamp-4">{record.description}</p>
-            //     </div>
+                <div className="text-sm text-gray-700 line-clamp-4">
+                    <p className="text-sm text-gray-700 line-clamp-4">{record.offerings.description}</p>
+                </div>
 
-            // ),
-            ellipsis: {
-                showTitle: false,
-            },
-            render: (record) => (
-                <Tooltip placement="topLeft" title={record}>
-                    {record}
-
-                </Tooltip>
             ),
 
         },
@@ -556,12 +493,12 @@ export default function TableProduct() {
 
     const handleChange = (e, value) => {
         console.log(value);
-        setSelectedMaterials(value);
-        // setMaterial(value)
+        setSelectedCategorys(value);
+        // setcategory(value)
         if (value.length === 0) {
-            setValue("material", null, { shouldValidate: true });
+            setValue("category", null, { shouldValidate: true });
         } else {
-            setValue("material", value, { shouldValidate: true });
+            setValue("category", value, { shouldValidate: true });
 
         }
     };
@@ -604,7 +541,7 @@ export default function TableProduct() {
                                             type="text"
                                             label={textApp.CreateProduct.label.name}
                                             placeholder={textApp.CreateProduct.placeholder.name}
-                                            {...register("name")}
+                                            {...register("serviceName")}
                                             required
                                         />
                                     </div>
@@ -624,7 +561,7 @@ export default function TableProduct() {
                                     />
 
                                 </div>
-                                <div>
+                                {/* <div>
                                     <ComNumber
                                         label={textApp.CreateProduct.label.reducedPrice}
                                         placeholder={textApp.CreateProduct.placeholder.reducedPrice}
@@ -638,8 +575,8 @@ export default function TableProduct() {
                                         required
                                     />
 
-                                </div>
-                                <div>
+                                </div> */}
+                                {/* <div>
                                     <ComNumber
                                         label={textApp.CreateProduct.label.quantity}
                                         placeholder={textApp.CreateProduct.placeholder.quantity}
@@ -651,7 +588,7 @@ export default function TableProduct() {
                                         required
                                     />
 
-                                </div>
+                                </div> */}
 
 
                                 <div className="">
@@ -660,17 +597,17 @@ export default function TableProduct() {
                                         style={{
                                             width: '100%',
                                         }}
-                                        label={textApp.CreateProduct.label.material}
-                                        placeholder={textApp.CreateProduct.placeholder.material}
+                                        label={textApp.CreateProduct.label.category}
+                                        placeholder={textApp.CreateProduct.placeholder.category}
                                         required
                                         onChangeValue={handleChange}
-                                        value={selectedMaterials}
+                                        value={selectedcategorys}
                                         options={options}
-                                        {...register("material")}
+                                        {...register("category")}
 
                                     />
                                 </div>
-                                <div className="sm:col-span-2">
+                                {/* <div className="sm:col-span-2">
                                     <ComInput
                                         label={textApp.CreateProduct.label.shape}
                                         placeholder={textApp.CreateProduct.placeholder.shape}
@@ -678,7 +615,7 @@ export default function TableProduct() {
                                         type="text"
                                         {...register("shape")}
                                     />
-                                </div>
+                                </div> */}
                                 {/* <div className="sm:col-span-2">
                                     <ComInput
                                         label={textApp.CreateProduct.label.detail}
@@ -760,7 +697,7 @@ export default function TableProduct() {
                 width={500}
                 // style={{ top: 20 }}
                 onCancel={handleCancelDelete}>
-                <div className='text-lg p-6'>Bạn có chắc chắn muốn xóa sản phẩm đã chọn này không?</div>
+                <div className='text-lg p-6'>Bạn có chắc chắn muốn xóa dịch vụ đã chọn này không?</div>
 
                 <div className='flex'>
                     <ComButton

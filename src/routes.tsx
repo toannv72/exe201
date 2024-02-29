@@ -3,8 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "./Page/Authenticator/Login/Login";
 import PageNotFound from "./Page/Authenticator/404/PageNotFound";
 import Reissue from "./Page/Authenticator/Reissue/Reissue";
-import TableProduct from "./Page/admin/TableProduct";
-import CreateProduct from "./Page/admin/CreateProduct";
+import TableProduct from "./Page/admin/TableService";
+import CreateService from "./Page/admin/CreateService";
 import Logout from "./Page/Authenticator/Logout/Logout"; 
 import TableOrder from "./Page/admin/TableOrder"; 
 import TableUser from "./Page/Admin2/TableUser";
@@ -13,6 +13,7 @@ import TableOrderRequest from "./Page/admin/TableOrderRequest";
 import Home from "./Page/Authenticator/Home/Home";
 import Services from "./Page/Authenticator/Home/Services";
 import About from "./Page/Authenticator/Home/About";
+import TableService from "./Page/admin/TableService";
 export const routers = createBrowserRouter([ 
   { 
     path: "*", 
@@ -44,11 +45,11 @@ export const routers = createBrowserRouter([
   },
   { 
     path: "/staff/product/create",
-    element: <CreateProduct />, 
+    element: <CreateService/>, 
   }, 
   {
     path: "/staff/product/table", 
-    element: <TableProduct />, 
+    element: <TableService />, 
   },
   {
     path: "/staff/order",

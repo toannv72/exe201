@@ -1,6 +1,6 @@
 
-import { useState } from 'react'
-import { postData } from '../../api/api'
+import { useEffect, useState } from 'react'
+import { getData, postData } from '../../api/api'
 import { textApp } from '../../TextContent/textApp'
 import ComInput from '../Components/ComInput/ComInput'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -31,49 +31,59 @@ const options = [
     },
 ];
 
-export default function CreateProduct() {
+export default function CreateService() {
     const [disabled, setDisabled] = useState(false);
-    const [image, setImages] = useState([]);
+    const [image, setImages] = useState('');
     const [api, contextHolder] = notification.useNotification();
 
 
+    useEffect(() => {
+        getData('/offers/getAllInformation')
+            .then((e) => {
+                console.log(111111111111111, e);
+            })
+
+        // const fetchData = async () => {
+        //     try {
+        //       const response = await fetch('https://petside.azurewebsites.net/api/offers/getAllInformation');
+        //       const jsonData = await response.json();
+        //       console.log(jsonData);
+        //     } catch (error) {
+        //       console.error('Error fetching data:', error);
+        //     }
+        //   };
+
+        //   fetchData();
+    }, [])
+
     const CreateProductMessenger = yup.object({
-        name: yup.string().required(textApp.CreateProduct.message.name),
+        serviceName: yup.string().required(textApp.CreateProduct.message.name),
         price: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
         price1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
-        // reducedPrice: yup.number().min(1, textApp.CreateProduct.message.priceMin).typeError(textApp.CreateProduct.message.price),
-        // reducedPrice1: yup.string().required(textApp.CreateProduct.message.price).min(1, textApp.CreateProduct.message.priceMin).test('no-dots', textApp.CreateProduct.message.priceDecimal, value => !value.includes('.')),
-        // quantity: yup.number().min(1, textApp.CreateProduct.message.quantityMin).typeError(textApp.CreateProduct.message.quantity).required('Số lượng không được để trống'),
-        // shape: yup.string().required(textApp.CreateProduct.message.shape),
         category: yup.string().required(textApp.CreateProduct.message.category),
         description: yup.string().required(textApp.CreateProduct.message.description),
     })
     const createProductRequestDefault = {
         price: 1000,
-        reducedPrice: 1000,
     };
     const methods = useForm({
         resolver: yupResolver(CreateProductMessenger),
         defaultValues: {
-            name: "",
+            serviceName: "",
             price: "",
-            // quantity: 1,
-            // models: "",
-            // shape: "",
             category: "",
-            // accessory: "",
             image: "",
             description: "",
         },
         values: createProductRequestDefault
     })
-    const { handleSubmit, register, setFocus, watch, setValue } = methods
+    const { handleSubmit, register, setFocus, watch, setValue } = methods;
+    console.log("Current form values:", watch());
 
     function isInteger(number) {
         return typeof number === 'number' && isFinite(number) && Math.floor(number) === number;
     }
     const onSubmit = (data) => {
-
         if (data.price % 1000 !== 0) {
             api["error"]({
                 message: textApp.CreateProduct.Notification.m7.message,
@@ -82,14 +92,6 @@ export default function CreateProduct() {
             });
             return
         }
-        // if (data.reducedPrice % 1000 !== 0) {
-        //     api["error"]({
-        //         message: textApp.CreateProduct.Notification.m8.message,
-        //         description:
-        //             textApp.CreateProduct.Notification.m8.description
-        //     });
-        //     return
-        // }
         if (!isInteger(data.price)) {
 
             api["error"]({
@@ -115,16 +117,8 @@ export default function CreateProduct() {
                     textApp.CreateProduct.Notification.m5.description
             });
             return
-        }
 
-        // if (data.price <= data.reducedPrice) {
-        //     api["error"]({
-        //         message: textApp.CreateProduct.Notification.m6.message,
-        //         description:
-        //             textApp.CreateProduct.Notification.m6.description
-        //     });
-        //     return
-        // }
+        }
 
         setDisabled(true)
         firebaseImgs(image)
@@ -132,11 +126,11 @@ export default function CreateProduct() {
                 console.log('ảnh nè : ', dataImg);
                 const updatedData = {
                     ...data, // Giữ lại các trường dữ liệu hiện có trong data
-                    image: dataImg, // Thêm trường images chứa đường dẫn ảnh
+                    image: dataImg[0], // Thêm trường images chứa đường dẫn ảnh
 
                 };
 
-                postData('/product', updatedData, {})
+                postData('/offers/CreateInformation?listProvider=0cb84163-3df2-4160-acd0-08dc39513829', updatedData, {})
                     .then((dataS) => {
                         console.log(dataS);
                         setDisabled(false)
@@ -159,7 +153,7 @@ export default function CreateProduct() {
             .catch((error) => {
                 console.log(error)
             });
-
+        console.log("Submitted data", data);
 
     }
     const onChange = (data) => {
@@ -172,13 +166,8 @@ export default function CreateProduct() {
         // setFileList(data);
     }
     const handleValueChange = (e, value) => {
-
+        console.log("Changed value:", value);
         setValue("price", value, { shouldValidate: true });
-    };
-
-    const handleValueChange1 = (e, value) => {
-        console.log(value);
-        setValue("reducedPrice", value, { shouldValidate: true });
     };
 
     const handleValueChangeSelect = (e, value) => {
@@ -187,11 +176,12 @@ export default function CreateProduct() {
         } else {
             setValue("category", value, { shouldValidate: true });
         }
+        console.log("Changed category value:", value);
     };
     return (
         <>
             {contextHolder}
-            <ComHeaderStaff/>
+            <ComHeaderStaff />
             <div className="isolate bg-white px-6 py-10 sm:py-10 lg:px-8">
                 <div className="mx-auto max-w-2xl text-center">
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -208,9 +198,10 @@ export default function CreateProduct() {
                                         type="text"
                                         label={textApp.CreateProduct.label.name}
                                         placeholder={textApp.CreateProduct.placeholder.name}
-                                        {...register("name")}
+                                        {...register("serviceName")}
                                         required
                                     />
+
                                 </div>
                             </div>
                             <div>
@@ -254,7 +245,7 @@ export default function CreateProduct() {
 
                             </div> */}
 
-               
+
                             <div className="">
                                 <ComSelect
                                     size={"large"}
@@ -280,7 +271,7 @@ export default function CreateProduct() {
                                 />
                             </div> */}
 
-                 
+
                             <div className="sm:col-span-2">
 
                                 <div className="mt-2.5">
@@ -297,12 +288,12 @@ export default function CreateProduct() {
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
-                                <label  className="text-paragraph font-bold">
+                                <label className="text-paragraph font-bold">
                                     Hình ảnh
-                                        <span className="text-paragraph font-bold text-error-7 text-red-500">
-                                            *
-                                        </span>
-                                   
+                                    <span className="text-paragraph font-bold text-error-7 text-red-500">
+                                        *
+                                    </span>
+
                                 </label>
                                 <ComUpImg onChange={onChange} />
                             </div>
@@ -320,6 +311,8 @@ export default function CreateProduct() {
                         </div>
                     </form>
                 </FormProvider>
+
+
 
             </div>
         </>
