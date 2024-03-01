@@ -4,7 +4,7 @@ import axios from "axios";
 
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URLS1,
+  baseURL: 'https://petside.azurewebsites.net/api',
   // withCredentials: true,
 });
 // Thêm các headers mặc định nếu cần
