@@ -32,6 +32,8 @@ export default function OrderPending({ activeTab }) {
     const [products, setProducts] = useState([]);
     const [orderDetail, setOrderDetail] = useState({});
     const [orderModalDetail, setModalOrderDetail] = useState(false);
+
+    console.log(order);
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
 
@@ -151,24 +153,25 @@ export default function OrderPending({ activeTab }) {
         handleCancelCanceledS()
     }
     useEffect(() => {
-        getData('/product/staff', {})
+        getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
             .then((productData) => {
                 setProducts(productData?.data);
+                console.log(productData?.data);
             })
             .catch((error) => {
                 console.error("Error fetching products:", error);
             });
         setTimeout(() => {
-            getData('/order/admin/pending', {})
+            getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
                 .then((data) => {
-                    setOrder(data?.data?.docs)
+                    setOrder(data?.data)
                 })
                 .catch((error) => {
                     console.error("Error fetching items:", error);
                 });
 
         }, 100);
-    }, [dataRun,activeTab]);
+    }, [dataRun, activeTab]);
 
 
     const getColumnSearchProps = (dataIndex, title) => ({
@@ -252,7 +255,7 @@ export default function OrderPending({ activeTab }) {
             ) : (
                 text
             ),
-    }); 
+    });
     const showModalDetail = (e) => {
         setOrderDetail({
             detail: e
@@ -263,18 +266,18 @@ export default function OrderPending({ activeTab }) {
 
 
         {
-            title: 'Mã đơn hàng',
-            dataIndex: '_id',
+            title: 'Mã dịch vụ',
+            dataIndex: 'appointmentId',
             width: 300,
-            key: '_id',
+            key: 'appointmentId',
             fixed: 'left',
 
-            ...getColumnSearchProps('_id', 'Mã đơn hàng'),
+            ...getColumnSearchProps('appointmentId', 'Mã dịch vụ'),
             render: (_, record) => (
 
                 <div >
                     <Typography.Link onClick={() => showModalDetail(record)}>
-                        {record._id}
+                        {record.appointmentId}
                     </Typography.Link>
                 </div>
             ),
@@ -282,22 +285,51 @@ export default function OrderPending({ activeTab }) {
         {
             title: 'Tên Người đặt',
             width: 200,
-            dataIndex: 'name',
-            key: 'name',
-            ...getColumnSearchProps('name', "tên"),
-
+            dataIndex: 'user',
+            key: 'user',
+            ...getColumnSearchProps('user.fullName', "tên"),
+            render: (_, record) => (
+                <div >
+                    {record.user.fullName}
+                </div>
+            ),
         },
         {
-            title: 'Ngày đặt hàng',
+            title: 'Dịch vụ đặt',
+            width: 200,
+            dataIndex: 'user',
+            key: 'user',
+            ...getColumnSearchProps('user.fullName', "tên"),
+            render: (_, record) => (
+                <div >
+                    {record.offeringsDto[0].serviceName}
+                </div>
+            ),
+        },
+        {
+            title: 'Ngày đặt ',
             dataIndex: 'createdAt',
             width: 110,
             key: 'createdAt',
-            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            sorter: (a, b) => moment(a.bookingDate).unix() - moment(b.bookingDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày đặt hàng"),
             render: (_, record) => (
 
                 <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{moment(record.createdAt).format('l')}</p>
+                    <p>{moment(record.bookingDate).format('l')}</p>
+                </div>
+            ),
+        }, {
+            title: 'Ngày làm',
+            dataIndex: 'createdAt',
+            width: 110,
+            key: 'createdAt',
+            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            ...getColumnSearchProps('createdAt', "Ngày làm"),
+            render: (_, record) => (
+
+                <div className="text-sm text-gray-700 line-clamp-4">
+                    <p>{moment(record.returnDate).format('l')}</p>
                 </div>
             ),
         },
@@ -306,63 +338,50 @@ export default function OrderPending({ activeTab }) {
             width: 200,
             dataIndex: 'phone',
             key: 'phone',
-            sorter: (a, b) => a.phone - b.phone,
-            ...getColumnSearchProps('phone', "phone"),
-
-        },
-        {
-            title: 'Email',
-            width: 200,
-            dataIndex: 'email',
-            key: 'email',
-            ...getColumnSearchProps('email', "email"),
-        },
-
-        {
-            title: 'Địa chỉ ',
-            width: 300,
-            dataIndex: 'shippingAddress',
-            key: 'shippingAddress',
-            ...getColumnSearchProps('shippingAddress', "Địa chỉ"),
+            render: (_, record) => (
+                <div >
+                    {record.user.phoneNumber}
+                </div>
+            ),
 
         },
         {
             title: 'Tổng tiền đơn hàng',
             width: 300,
-            dataIndex: 'totalAmount',
-            key: 'totalAmount',
+            dataIndex: 'appointmentFee',
+            key: 'appointmentFee',
             // ...getColumnSearchProps('totalAmount', "Địa chỉ"),
-            sorter: (a, b) => a.totalAmount - b.totalAmount,
+            sorter: (a, b) => a.appointmentFee - b.appointmentFee,
             render: (_, record) => (
 
                 <div >
-                    <h1>{formatCurrency(record.totalAmount)}</h1>
+                    <h1>{formatCurrency(record.appointmentFee)}</h1>
                 </div>
             )
         },
-        {
-            title: 'Thông tin bổ sung',
-            dataIndex: 'description',
-            key: 'description',
-            width: 300,
-            ...getColumnSearchProps('description', "chi tiết"),
-            // render: (_, record) => (
+        // {
+        //     title: 'Thông tin bổ sung',
+        //     dataIndex: 'notes',
+        //     key: 'notes',
+        //     width: 300,
+        //     ...getColumnSearchProps('notes', "chi tiết"),
+        //     // render: (_, record) => (
 
-            //     <div className="text-sm text-gray-700 line-clamp-4">
-            //         <p className="text-sm text-gray-700 line-clamp-4">{record.description}</p>
-            //     </div>
+        //     //     <div className="text-sm text-gray-700 line-clamp-4">
+        //     //         <p className="text-sm text-gray-700 line-clamp-4">{record.description}</p>
+        //     //     </div>
 
-            // ),
-            ellipsis: {
-                showTitle: false,
-            },
-            render: (record) => (
-                <Tooltip placement="topLeft" title={record}>
-                    {record}
-                </Tooltip>
-            ),
+        //     // ),
+        //     ellipsis: {
+        //         showTitle: false,
+        //     },
+        //     render: (record) => (
+        //         <Tooltip placement="topLeft" title={record}>
+        //             {record}
+        //         </Tooltip>
+        //     ),
 
-        },
+        // },
         {
             title: 'Action',
             key: 'operation',
@@ -376,11 +395,11 @@ export default function OrderPending({ activeTab }) {
                             Chấp nhận
                         </Typography.Link>
                     </div>
-                    <div className='mt-2'>
+                    {/* <div className='mt-2'>
                         <Typography.Link onClick={() => handleOpenCanceled(record)}>
                             <div className='text-red-600'>hủy</div>
                         </Typography.Link>
-                    </div>
+                    </div> */}
                 </div>
             )
         },
@@ -533,7 +552,7 @@ export default function OrderPending({ activeTab }) {
                 onCancel={closeModalDetail}>
                 <div className=" flex items-center justify-center">
                     <div className="p-4 md:p-8 lg:p-12 rounded-lg  w-full">
-                     
+
                         <div className="mb-4">
                             <h2 className="text-lg font-semibold mb-2">Thông tin sản phẩm:</h2>
                             {orderDetail?.detail?.products?.map((product, index) => {
@@ -550,7 +569,7 @@ export default function OrderPending({ activeTab }) {
                                                 {textApp.OrderHistory.product.quantity} {product?.quantity}
                                             </p>
                                             <p>
-                                                {textApp.OrderHistory.product.price} {product?.price?.toLocaleString("en-US", { style: "currency", currency: "VND" })}
+                                                {textApp.OrderHistory.product.price} {product?.appointmentFee?.toLocaleString("en-US", { style: "currency", currency: "VND" })}
                                             </p>
                                             <p>
                                                 {textApp.Product.page.material}{materials}

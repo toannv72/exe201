@@ -287,7 +287,7 @@ export const textApp = {
     },
     OrderHistory:{
         label:{
-        status: "Chờ duyệt",
+        status: "Chờ ",
         status1:"Đang xử lí",
         status2:"Đang vận chuyển",
         status3:"Hoàn thành",

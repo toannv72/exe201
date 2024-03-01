@@ -28,33 +28,33 @@ const data = [
         desc: <OrderProcessing />,
     },
 
-    {
-        label: textApp.OrderHistory.label.status2,
-        value: textApp.OrderHistory.value.status2,
-        desc: <OrderShipped />,
-    },
+    // {
+    //     label: textApp.OrderHistory.label.status2,
+    //     value: textApp.OrderHistory.value.status2,
+    //     desc: <OrderShipped />,
+    // },
 
-    {
-        label: textApp.OrderHistory.label.status3,
-        value: textApp.OrderHistory.value.status3,
-        desc: <OrderDelivered />,
-    },
+    // {
+    //     label: textApp.OrderHistory.label.status3,
+    //     value: textApp.OrderHistory.value.status3,
+    //     desc: <OrderDelivered />,
+    // },
 
-    {
-        label: textApp.OrderHistory.label.status4,
-        value: textApp.OrderHistory.value.status4,
-        desc: <OrderCanceled />,
-    },
-    {
-        label: textApp.OrderHistory.label.status5,
-        value: textApp.OrderHistory.value.status5,
-        desc: <OrderReturned />,
-    },
-    {
-        label: textApp.OrderHistory.label.status6,
-        value: textApp.OrderHistory.value.status6,
-        desc: <OrderAll />,
-    },
+    // {
+    //     label: textApp.OrderHistory.label.status4,
+    //     value: textApp.OrderHistory.value.status4,
+    //     desc: <OrderCanceled />,
+    // },
+    // {
+    //     label: textApp.OrderHistory.label.status5,
+    //     value: textApp.OrderHistory.value.status5,
+    //     desc: <OrderReturned />,
+    // },
+    // {
+    //     label: textApp.OrderHistory.label.status6,
+    //     value: textApp.OrderHistory.value.status6,
+    //     desc: <OrderAll />,
+    // },
 ];
 export default function TableOrder() {
     const [activeTab, setActiveTab] = useState(data[0].value);
