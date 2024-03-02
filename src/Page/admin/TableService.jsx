@@ -33,7 +33,20 @@ export default function TableService() {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    useEffect(() => {
+        setTimeout(() => {
+            getData('/providers/getInformation/0cb84163-3df2-4160-acd0-08dc39513829', {})
+                .then((data) => {
+                    setProducts(data.data.data.offerProviders)
+                })
+                .catch((error) => {
+                    console.error("Error fetching items:", error);
+                });
 
+        }, 100);
+
+
+    }, [dataRun]);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -43,7 +56,6 @@ export default function TableService() {
         clearFilters();
         setSearchText('');
     };
-    console.log(productRequestDefault);
     const showModalEdit = (e) => {
         setSelectedCategorys(e.offerings.category)
         setProductPrice(e.offerings.price)
@@ -161,7 +173,6 @@ export default function TableService() {
                         category:selectedcategorys
 
                     };
-                    console.log(1111111111111,updatedData)
                     putData(`/offers/updateOffers`, productRequestDefault.offerId, updatedData, {})
                         .then((dataS) => {
                             api["success"]({
@@ -186,7 +197,6 @@ export default function TableService() {
                         image: dataImg[0], // Thêm trường images chứa đường dẫn ảnh
                         category:selectedcategorys
                     };
-                    console.log(1111111111111,updatedData)
 
                     putData(`/offers/updateOffers`, productRequestDefault.offerId, updatedData, {})
                         .then((dataS) => {
@@ -221,7 +231,7 @@ export default function TableService() {
 
     const deleteById = () => {
         setDisabled(true)
-        deleteData('/offers/offering/369e9a23-1bc7-46d0-30dd-08dc39436da9', productRequestDefault.offerId)
+        deleteData('/offers/offering/0cb84163-3df2-4160-acd0-08dc39513829', productRequestDefault.offerId)
             .then((data) => {
                 setDisabled(false)
                 handleCancelDelete()
@@ -245,21 +255,7 @@ export default function TableService() {
         setDataRun(!dataRun)
 
     }
-    useEffect(() => {
-        setTimeout(() => {
-            getData('/providers/getInformation/0cb84163-3df2-4160-acd0-08dc39513829', {})
-                .then((data) => {
-                    console.log(data.data.data.offerProviders);
-                    setProducts(data.data.data.offerProviders)
-                })
-                .catch((error) => {
-                    console.error("Error fetching items:", error);
-                });
 
-        }, 100);
-
-
-    }, [dataRun]);
 
     const onChange = (data) => {
         const selectedImages = data;
@@ -368,6 +364,7 @@ export default function TableService() {
         {
             title: 'Ảnh dịch vụ',
             dataIndex: 'offerings',
+            width: 200,
             key: 'img',
             fixed: 'left',
             render: (_, record) => (
@@ -444,6 +441,7 @@ export default function TableService() {
         {
             title: 'Phân loại',
             dataIndex: 'offerings',
+            width: 150,
             key: 'category',
             render: (_, record) => (
                 <div className="text-sm text-gray-700 line-clamp-4">

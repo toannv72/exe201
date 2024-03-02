@@ -24,7 +24,6 @@ export default function OrderPending({ activeTab }) {
     const [dataRun, setDataRun] = useState(false);
     const [orderRequestDefault, setOrderRequestDefault] = useState({});
     const [api, contextHolder] = notification.useNotification();
-    const [selectedMaterials, setSelectedMaterials] = useState();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -33,7 +32,6 @@ export default function OrderPending({ activeTab }) {
     const [orderDetail, setOrderDetail] = useState({});
     const [orderModalDetail, setModalOrderDetail] = useState(false);
 
-    console.log(order);
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
 
@@ -153,15 +151,6 @@ export default function OrderPending({ activeTab }) {
         handleCancelCanceledS()
     }
     useEffect(() => {
-        getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
-            .then((productData) => {
-                setProducts(productData?.data);
-                console.log(productData?.data);
-            })
-            .catch((error) => {
-                console.error("Error fetching products:", error);
-            });
-        setTimeout(() => {
             getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
                 .then((data) => {
                     setOrder(data?.data)
@@ -170,8 +159,24 @@ export default function OrderPending({ activeTab }) {
                     console.error("Error fetching items:", error);
                 });
 
-        }, 100);
     }, [dataRun, activeTab]);
+    const getDataAndSetOrder = () => {
+        getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
+            .then((data) => {
+                setOrder(data?.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching items:", error);
+            });
+    };
+
+    useEffect(() => {
+        const intervalId = setInterval(getDataAndSetOrder, 3000); // 10 giây
+
+        // Xóa interval khi component unmount hoặc khi dependencies thay đổi
+        return () => clearInterval(intervalId);
+    }, []); // dependencies rỗng, sẽ chỉ được gọi một lần khi component mount
+
 
 
     const getColumnSearchProps = (dataIndex, title) => ({
@@ -308,9 +313,9 @@ export default function OrderPending({ activeTab }) {
         },
         {
             title: 'Ngày đặt ',
-            dataIndex: 'createdAt',
+            dataIndex: 'bookingDate',
             width: 110,
-            key: 'createdAt',
+            key: 'bookingDate',
             sorter: (a, b) => moment(a.bookingDate).unix() - moment(b.bookingDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày đặt hàng"),
             render: (_, record) => (
@@ -321,15 +326,15 @@ export default function OrderPending({ activeTab }) {
             ),
         }, {
             title: 'Ngày làm',
-            dataIndex: 'createdAt',
+            dataIndex: 'returnDate',
             width: 110,
-            key: 'createdAt',
-            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            key: 'returnDate',
+            sorter: (a, b) => moment(a.returnDate).unix() - moment(b.returnDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày làm"),
             render: (_, record) => (
 
                 <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{moment(record.returnDate).format('l')}</p>
+                    <p>{moment(record.returnDate).format('LLLL')}</p>
                 </div>
             ),
         },
@@ -392,7 +397,7 @@ export default function OrderPending({ activeTab }) {
                 <div className='flex items-center flex-col'>
                     <div>
                         <Typography.Link onClick={() => showModalEdit(record)}>
-                            Chấp nhận
+                            Xác nhận
                         </Typography.Link>
                     </div>
                     {/* <div className='mt-2'>
@@ -416,7 +421,7 @@ export default function OrderPending({ activeTab }) {
                     onClick={() => setIsModalOpenProcessingS(true)}
                     className={`flex  items-center justify-center rounded-md border border-transparent text-base font-medium text-white ${disabled ? " bg-slate-700" : "hover:to-sky-700 hover:from-sky-800 bg-gradient-to-b from-sky-600 to-sky-700"}  `}
                 >
-                    Chấp nhận
+                    Xác nhận
                 </Button>
                 <Button
                     disabled={disabled}

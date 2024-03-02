@@ -288,7 +288,7 @@ export const textApp = {
     OrderHistory:{
         label:{
         status: "Chờ ",
-        status1:"Đang xử lí",
+        status1:"Đã hoàn tất",
         status2:"Đang vận chuyển",
         status3:"Hoàn thành",
         status4:"Đã hủy",

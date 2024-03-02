@@ -5,23 +5,17 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Highlighter from 'react-highlight-words';
 import * as yup from "yup"
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Modal, Select, Space, Table, Tooltip, Typography, notification } from 'antd';
+import { Button, Input, Modal, Space, Table, Tooltip, Typography, notification } from 'antd';
 import { textApp } from '../../../TextContent/textApp';
-import { deleteData, getData, postData, putData } from '../../../api/api';
-import { firebaseImgs } from '../../../upImgFirebase/firebaseImgs';
-import ComHeaderAdmin from '../../Components/ComHeaderAdmin/ComHeaderAdmin';
+import { deleteData, getData, putData } from '../../../api/api';
+
 import ComButton from '../../Components/ComButton/ComButton';
-import ComUpImg from '../../Components/ComUpImg/ComUpImg';
-import ComInput from '../../Components/ComInput/ComInput';
-import ComTextArea from '../../Components/ComInput/ComTextArea';
-import ComNumber from '../../Components/ComInput/ComNumber';
-import ComSelect from '../../Components/ComInput/ComSelect';
+
 import moment from 'moment/moment';
 
 
 export default function OrderProcessing({ activeTab }) {
     const [disabled, setDisabled] = useState(false);
-    const [products, setProducts] = useState([]);
     const [order, setOrder] = useState([]);
     const [isModalOpenProcessing, setIsModalOpenProcessing] = useState(false);
     const [isModalOpenCanceled, setIsModalOpenCanceled] = useState(false);
@@ -29,15 +23,17 @@ export default function OrderProcessing({ activeTab }) {
     const [isModalOpenCanceledS, setIsModalOpenCanceledS] = useState(false);
     const [dataRun, setDataRun] = useState(false);
     const [orderRequestDefault, setOrderRequestDefault] = useState({});
-    const [orderDetail, setOrderDetail] = useState({});
-    const [orderModalDetail, setModalOrderDetail] = useState(false);
     const [api, contextHolder] = notification.useNotification();
     const [selectedMaterials, setSelectedMaterials] = useState();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const [selected, setSelected] = useState([]);
-    console.log(orderDetail);
+    const [products, setProducts] = useState([]);
+    const [orderDetail, setOrderDetail] = useState({});
+    const [orderModalDetail, setModalOrderDetail] = useState(false);
+
+    console.log(order);
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
 
@@ -64,19 +60,16 @@ export default function OrderProcessing({ activeTab }) {
             id: e._id
         })
         setIsModalOpenProcessing(true);
-    };
-    const showModalDetail = (e) => {
-        setOrderDetail({
-            detail: e
-        })
-        setModalOrderDetail(true);
-    };
 
+    };
     const closeModalDetail = () => {
         setOrderDetail({})
         setModalOrderDetail(false);
     };
-
+    const getProductById = (productId) => {
+        // Tìm sản phẩm theo ID trong danh sách sản phẩm\
+        return products?.docs?.find(product => product._id === productId);
+    };
     const handleOpenCanceled = (e) => {
 
         setOrderRequestDefault({
@@ -115,43 +108,60 @@ export default function OrderProcessing({ activeTab }) {
             setDisabled(true)
         }
     }, [selected]);
-
-    const shipped = () => {
-        putData('/order/admin/put', 'Shipped', { orders: [orderRequestDefault.id] })
+    const processing = () => {
+        putData('/order/admin/put', 'Processing', { orders: [orderRequestDefault.id] })
             .then((e) => {
-
                 setDataRun(!dataRun);
             })
             .catch(err => console.log(err))
         setDataRun(!dataRun);
         handleCancelProcessing()
     }
-    const shippedS = () => {
-        putData('/order/admin/put', 'Shipped', { orders: selected })
+
+    const sttCanceled = () => {
+        putData('/order/admin/put', 'Canceled', { orders: [orderRequestDefault.id] })
             .then((e) => {
+
                 setDataRun(!dataRun);
             })
             .catch(err => console.log(err))
         setDataRun(!dataRun);
-        handleCancelProcessingS();
-        setDisabled(true)
+        handleCancelCanceled()
     }
 
+    const processingS = () => {
+        putData('/order/admin/put', 'Processing', { orders: selected })
+            .then((e) => {
+                setDataRun(!dataRun);
+            })
+            .catch(err => console.log(err))
+        setDisabled(true)
+        console.log(123);
+        setDataRun(!dataRun);
+        handleCancelProcessingS()
+    }
+
+    const canceledS = () => {
+        putData('/order/admin/put', 'Canceled', { orders: selected })
+            .then((e) => {
+                setDataRun(!dataRun);
+                handleCancelCanceledS()
+            })
+            .catch(err => console.log(err))
+        setDisabled(true)
+        setDataRun(!dataRun);
+        handleCancelCanceledS()
+    }
     useEffect(() => {
-        getData('/order/admin/Processing', {})
-            .then((data) => {
-                setOrder(data?.data?.docs)
-            })
-            .catch((error) => {
-                console.error("Error fetching items:", error);
-            });
-        getData('/product/staff', {})
-            .then((productData) => {
-                setProducts(productData?.data);
-            })
-            .catch((error) => {
-                console.error("Error fetching products:", error);
-            });
+      
+            getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
+                .then((data) => {
+                    setOrder(data?.data)
+                })
+                .catch((error) => {
+                    console.error("Error fetching items:", error);
+                });
+
     }, [dataRun, activeTab]);
 
 
@@ -237,22 +247,28 @@ export default function OrderProcessing({ activeTab }) {
                 text
             ),
     });
+    const showModalDetail = (e) => {
+        setOrderDetail({
+            detail: e
+        })
+        setModalOrderDetail(true);
+    };
     const columns = [
 
 
         {
-            title: 'Mã đơn hàng',
-            dataIndex: '_id',
+            title: 'Mã dịch vụ',
+            dataIndex: 'appointmentId',
             width: 300,
-            key: '_id',
+            key: 'appointmentId',
             fixed: 'left',
 
-            ...getColumnSearchProps('_id', 'Mã đơn hàng'),
+            ...getColumnSearchProps('appointmentId', 'Mã dịch vụ'),
             render: (_, record) => (
 
                 <div >
                     <Typography.Link onClick={() => showModalDetail(record)}>
-                        {record._id}
+                        {record.appointmentId}
                     </Typography.Link>
                 </div>
             ),
@@ -260,22 +276,51 @@ export default function OrderProcessing({ activeTab }) {
         {
             title: 'Tên Người đặt',
             width: 200,
-            dataIndex: 'name',
-            key: 'name',
-            ...getColumnSearchProps('name', "tên"),
-
+            dataIndex: 'user',
+            key: 'user',
+            ...getColumnSearchProps('user.fullName', "tên"),
+            render: (_, record) => (
+                <div >
+                    {record.user.fullName}
+                </div>
+            ),
         },
         {
-            title: 'Ngày đặt hàng',
+            title: 'Dịch vụ đặt',
+            width: 200,
+            dataIndex: 'user',
+            key: 'user',
+            ...getColumnSearchProps('user.fullName', "tên"),
+            render: (_, record) => (
+                <div >
+                    {record.offeringsDto[0].serviceName}
+                </div>
+            ),
+        },
+        {
+            title: 'Ngày đặt ',
             dataIndex: 'createdAt',
             width: 110,
             key: 'createdAt',
-            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            sorter: (a, b) => moment(a.bookingDate).unix() - moment(b.bookingDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày đặt hàng"),
             render: (_, record) => (
 
                 <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{moment(record.createdAt).format('l')}</p>
+                    <p>{moment(record.bookingDate).format('l')}</p>
+                </div>
+            ),
+        }, {
+            title: 'Ngày làm',
+            dataIndex: 'createdAt',
+            width: 110,
+            key: 'createdAt',
+            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            ...getColumnSearchProps('createdAt', "Ngày làm"),
+            render: (_, record) => (
+
+                <div className="text-sm text-gray-700 line-clamp-4">
+                    <p>{moment(record.returnDate).format('l')}</p>
                 </div>
             ),
         },
@@ -284,63 +329,50 @@ export default function OrderProcessing({ activeTab }) {
             width: 200,
             dataIndex: 'phone',
             key: 'phone',
-            sorter: (a, b) => a.phone - b.phone,
-            ...getColumnSearchProps('phone', "phone"),
-
-        },
-        {
-            title: 'Email',
-            width: 200,
-            dataIndex: 'email',
-            key: 'email',
-            ...getColumnSearchProps('email', "email"),
-        },
-
-        {
-            title: 'Địa chỉ ',
-            width: 300,
-            dataIndex: 'shippingAddress',
-            key: 'shippingAddress',
-            ...getColumnSearchProps('shippingAddress', "Địa chỉ"),
+            render: (_, record) => (
+                <div >
+                    {record.user.phoneNumber}
+                </div>
+            ),
 
         },
         {
             title: 'Tổng tiền đơn hàng',
             width: 300,
-            dataIndex: 'totalAmount',
-            key: 'totalAmount',
+            dataIndex: 'appointmentFee',
+            key: 'appointmentFee',
             // ...getColumnSearchProps('totalAmount', "Địa chỉ"),
-            sorter: (a, b) => a.totalAmount - b.totalAmount,
+            sorter: (a, b) => a.appointmentFee - b.appointmentFee,
             render: (_, record) => (
 
                 <div >
-                    <h1>{formatCurrency(record.totalAmount)}</h1>
+                    <h1>{formatCurrency(record.appointmentFee)}</h1>
                 </div>
             )
         },
-        {
-            title: 'Thông tin bổ sung',
-            dataIndex: 'description',
-            key: 'description',
-            width: 300,
-            ...getColumnSearchProps('description', "chi tiết"),
-            // render: (_, record) => (
+        // {
+        //     title: 'Thông tin bổ sung',
+        //     dataIndex: 'notes',
+        //     key: 'notes',
+        //     width: 300,
+        //     ...getColumnSearchProps('notes', "chi tiết"),
+        //     // render: (_, record) => (
 
-            //     <div className="text-sm text-gray-700 line-clamp-4">
-            //         <p className="text-sm text-gray-700 line-clamp-4">{record.description}</p>
-            //     </div>
+        //     //     <div className="text-sm text-gray-700 line-clamp-4">
+        //     //         <p className="text-sm text-gray-700 line-clamp-4">{record.description}</p>
+        //     //     </div>
 
-            // ),
-            ellipsis: {
-                showTitle: false,
-            },
-            render: (record) => (
-                <Tooltip placement="topLeft" title={record}>
-                    {record}
-                </Tooltip>
-            ),
+        //     // ),
+        //     ellipsis: {
+        //         showTitle: false,
+        //     },
+        //     render: (record) => (
+        //         <Tooltip placement="topLeft" title={record}>
+        //             {record}
+        //         </Tooltip>
+        //     ),
 
-        },
+        // },
         {
             title: 'Action',
             key: 'operation',
@@ -364,11 +396,6 @@ export default function OrderProcessing({ activeTab }) {
         },
     ];
 
-    const getProductById = (productId) => {
-        // Tìm sản phẩm theo ID trong danh sách sản phẩm
-     
-        return products?.docs?.find(product => product._id === productId);
-    };
 
     return (
         <>
@@ -380,16 +407,16 @@ export default function OrderProcessing({ activeTab }) {
                     onClick={() => setIsModalOpenProcessingS(true)}
                     className={`flex  items-center justify-center rounded-md border border-transparent text-base font-medium text-white ${disabled ? " bg-slate-700" : "hover:to-sky-700 hover:from-sky-800 bg-gradient-to-b from-sky-600 to-sky-700"}  `}
                 >
-                    Xác nhận
+                    Chấp nhận
                 </Button>
-                {/* <Button
+                <Button
                     disabled={disabled}
                     type="primary"
                     onClick={() => setIsModalOpenCanceledS(true)}
                     className={`flex  items-center justify-center rounded-md border border-transparent text-base font-medium text-white ${disabled ? " bg-slate-700" : "hover:to-red-700 hover:from-red-800 bg-gradient-to-b from-red-600 to-red-700"}  `}
                 >
                     Từ chối
-                </Button> */}
+                </Button>
             </div>
             <div className='flex p-2 justify-center'>
                 <Table
@@ -419,13 +446,12 @@ export default function OrderProcessing({ activeTab }) {
                 width={500}
                 // style={{ top: 20 }}
                 onCancel={handleCancelProcessing}>
-                <div className='text-lg p-6'>Bạn có chắc chắn muốn chuyển qua đã vận chuyển không?</div>
-
+                <div className='text-lg p-6'>Bạn có chắc chắn muốn chuyển qua đang sử lý hay không?</div>
                 <div className='flex'>
                     <ComButton
                         type="primary"
                         danger
-                        onClick={shipped}
+                        onClick={processing}
                     >
                         xác nhận
                     </ComButton>
@@ -437,31 +463,78 @@ export default function OrderProcessing({ activeTab }) {
                     </ComButton>
                 </div>
             </Modal>
+            <Modal title="Xác nhận hủy"
+                okType="primary text-black border-gray-700"
+                open={isModalOpenCanceled}
+                width={500}
+                // style={{ top: 20 }}
+                onCancel={handleCancelCanceled}>
+                <div className='text-lg p-6'>Bạn có chắc chắn muốn hủy đơn hàng này.</div>
+                <div className='flex'>
+                    <ComButton
+                        type="primary"
+                        danger
+                        onClick={sttCanceled}
+                    >
+                        Xác nhận
+                    </ComButton>
+                    <ComButton
+                        type="primary"
+                        onClick={handleCancelCanceled}
+                    >
+                        {textApp.TableProduct.modal.cancel}
+                    </ComButton>
+                </div>
+            </Modal>
+
             <Modal title="Chấp nhận đơn hàng"
                 okType="primary text-black border-gray-700"
                 open={isModalOpenProcessingS}
                 width={500}
                 // style={{ top: 20 }}
                 onCancel={handleCancelProcessingS}>
-                <div className='text-lg p-6'>Bạn có chắc chắn muốn chuyển qua đã vận chuyển không?</div>
+                <div className='text-lg p-6'>Bạn có chắc chắn muốn chuyển qua đang sử lý hay không?</div>
 
                 <div className='flex'>
                     <ComButton
                         type="primary"
                         danger
-                        onClick={shippedS}
+                        onClick={processingS}
                     >
                         xác nhận
                     </ComButton>
                     <ComButton
                         type="primary"
-                        onClick={closeModalDetail}
+                        onClick={handleCancelProcessingS}
                     >
                         hủy
                     </ComButton>
                 </div>
             </Modal>
+            <Modal title="Xác nhận hủy đơn hàng"
+                okType="primary text-black border-gray-700"
+                open={isModalOpenCanceledS}
+                width={500}
+                // style={{ top: 20 }}
+                onCancel={handleCancelCanceledS}>
+                <div className='text-lg p-6'>Bạn có chắc chắn muốn hủy đơn hàng đã chọn này không?</div>
 
+                <div className='flex'>
+                    <ComButton
+                        type="primary"
+                        danger
+                        onClick={canceledS}
+                    >
+                        Xác nhận
+                    </ComButton>
+                    <ComButton
+                        type="primary"
+                        onClick={handleCancelCanceledS}
+                    >
+                        {textApp.TableProduct.modal.cancel}
+                    </ComButton>
+                </div>
+            </Modal>
             <Modal title="Chi tiết đơn hàng"
                 okType="primary text-black border-gray-700"
                 open={orderModalDetail}
@@ -470,7 +543,7 @@ export default function OrderProcessing({ activeTab }) {
                 onCancel={closeModalDetail}>
                 <div className=" flex items-center justify-center">
                     <div className="p-4 md:p-8 lg:p-12 rounded-lg  w-full">
-                     
+
                         <div className="mb-4">
                             <h2 className="text-lg font-semibold mb-2">Thông tin sản phẩm:</h2>
                             {orderDetail?.detail?.products?.map((product, index) => {
@@ -487,7 +560,7 @@ export default function OrderProcessing({ activeTab }) {
                                                 {textApp.OrderHistory.product.quantity} {product?.quantity}
                                             </p>
                                             <p>
-                                                {textApp.OrderHistory.product.price} {product?.price?.toLocaleString("en-US", { style: "currency", currency: "VND" })}
+                                                {textApp.OrderHistory.product.price} {product?.appointmentFee?.toLocaleString("en-US", { style: "currency", currency: "VND" })}
                                             </p>
                                             <p>
                                                 {textApp.Product.page.material}{materials}

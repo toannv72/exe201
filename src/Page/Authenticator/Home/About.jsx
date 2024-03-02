@@ -36,10 +36,9 @@ export default function About() {
                             platform that simplifies pet care while fostering a
                             sense of community among pet lovers.</p>
                     </div>
-                    <div className="flex gap-8">
-                        <button className="bg-[#3A3F65] text-4xl p-8 rounded-lg border-2 border-zinc-50">Get Started</button>
-                        <button className="bg-transparent text-4xl p-8 rounded-lg border-2 border-zinc-50">Try It Now</button>
-
+                    <div className="flex gap-8 ">
+                        <button className="bg-[#3A3F65] text-2xl p-4 rounded-lg border-2 w-72 border-zinc-50">Get Started</button>
+                        <button className="bg-transparent text-2xl p-4 rounded-lg border-2 w-72 border-zinc-50">Try It Now</button>
                     </div>
                 </div>
 
