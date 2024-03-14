@@ -16,6 +16,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FieldError } from "../../Components/FieldError/FieldError";
 import { useCookies } from "react-cookie";
 import ComFooter from "../../Components/ComFooter/ComFooter";
+import images from "../../../img";
 
 export default function Login() {
     const [token, setToken] = useStorage("user", {});
@@ -50,7 +51,6 @@ export default function Login() {
     const onSubmit = (data) => {
         navigate('/staff/product/table')
         setLoginError(false)
-
         setLogin(false)
         setDisabled(true)
         postData('/login', data, {})
@@ -90,20 +90,21 @@ export default function Login() {
     }
 
     return (
-        <>
-
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
+        <div className="text-white relative isolate overflow-hidden bg-gray-900  sm:py-32">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 pb-12 lg:px-8 ">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-
-                    <h2 style={{}} className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 Login-h2">
+                    <h2 style={{}} className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight Login-h2">
                         Đăng nhập
                     </h2>
                 </div>
-
+                <img
+                    src={images.background}
+                    alt=""
+                    className="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center"
+                />
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <FormProvider {...methods} >
                         <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-
                             <ComInput
                                 placeholder={textApp.Login.placeholder.username}
                                 label={textApp.Login.label.username}
@@ -153,7 +154,7 @@ export default function Login() {
                 </div>
             </div>
             <ComFooter />
-        </>
+        </div>
     )
 
 }

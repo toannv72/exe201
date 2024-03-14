@@ -22,8 +22,9 @@ export default function ComHeader({ dataCart, updateCart }) {
         </div>
 
         
-        <div>
-        <button className="bg-[#3A3F65] text-2xl p-6 rounded-full ">Download</button>
+        <div className="flex gap-2">
+        <button className="bg-[#3A3F65] text-2xl p-4 rounded-full ">Download</button>
+        <Link to={'/login'} className="bg-[#3A3F65] text-2xl p-4 rounded-full ">Login</Link>
        
         </div>
       </div>

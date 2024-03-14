@@ -15,6 +15,8 @@ import ComHeader from "../../Components/ComHeader/ComHeader";
 import ComFooter from "../../Components/ComFooter/ComFooter";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
+import images from "../../../img";
+import ComTextArea from "../../Components/ComInput/ComTextArea";
 
 
 
@@ -35,6 +37,9 @@ export default function Reissue() {
         password: yup.string().required(textApp.Reissue.message.password).min(5, textApp.Reissue.message.passwordMIn),
         password2: yup.string().required(textApp.Reissue.message.password2).min(5, textApp.Reissue.message.passwordMIn),
         email: yup.string().email(textApp.Reissue.message.emailFormat).required(textApp.Reissue.message.email),
+        providerName: yup.string().required("Vui lòng nhập tên cửa hàng"),
+        location: yup.string().required("Vui lòng nhập địa chỉ cửa hàng"),
+        description: yup.string().required("Vui lòng nhập chi tiết cửa hàng"),
     })
     const LoginRequestDefault = {
         // code: "",
@@ -63,7 +68,19 @@ export default function Reissue() {
         }
         setDisabled(true)
         setError("")
-        postData('/reg', data, {})
+        const dataPost = {
+            "userNameLogin": data.username,
+            "password": data.password,
+            "providerName": data.providerName,
+            "contactInformation": data.phone,
+            "serviceType": data.serviceType,
+            "imageProvider": 'https://cdn.vietnambiz.vn/2019/10/3/color-silhouette-cartoon-facade-shop-store-vector-14711058-1570007843495391141359-1570076859193969194096-15700769046292030065819-1570076927728377843390.png',
+            "availability": data.availability,
+            "rating": 0,
+            "description": data.description,
+            "location": data.location
+        }
+        postData('/providers/CreateProvider', dataPost, {})
             .then((data) => {
                 api["success"]({
                     message: 'Thành công!',
@@ -86,87 +103,116 @@ export default function Reissue() {
     console.log(disabled);
     return (
         <>
-            {contextHolder}
+            <div className="text-white relative isolate overflow-hidden bg-gray-900  sm:py-32">
+                {contextHolder}
+                <img
+                    src={images.background}
+                    alt=""
+                    className="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center"
+                />
+                {/* <ComHeader /> */}
+                <div className="flex min-h-full flex-1 flex-col justify-center px-6 pb-12 lg:px-8">
+                    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
 
-            <ComHeader />
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight ">
+                            {textApp.Reissue.pageTitle}
+                        </h2>
+                    </div>
 
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        {textApp.Reissue.pageTitle}
-                    </h2>
+                    <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                        <FormProvider {...methods} >
+                            <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+
+                                <ComInput
+                                    placeholder={textApp.Reissue.placeholder.username}
+                                    label={textApp.Reissue.label.username}
+                                    type="text"
+                                    // search
+                                    maxLength={26}
+                                    onchange={() => { setError("") }}
+                                    {...register("username")}
+                                    required
+                                />
+                                <ComInput
+                                    placeholder={"Vui lòng nhập tên cửa hàng"}
+                                    label={"Tên cửa hàng"}
+                                    type="text"
+                                    // search
+                                    maxLength={26}
+                                    {...register("providerName")}
+                                    required
+                                />
+                                <ComInput
+                                    placeholder={textApp.Reissue.placeholder.phone}
+                                    label={textApp.Reissue.label.phone}
+                                    type="numbers"
+                                    maxLength={16}
+                                    {...register("phone")}
+                                    required
+                                />
+                                <ComInput
+                                    placeholder={textApp.Reissue.placeholder.email}
+                                    label={textApp.Reissue.label.email}
+                                    type="text"
+                                    {...register("email")}
+                                    required
+                                />
+                                <ComInput
+                                    placeholder={textApp.Reissue.placeholder.password}
+                                    label={textApp.Reissue.label.password}
+                                    type="password"
+                                    maxLength={26}
+                                    {...register("password")}
+                                    required
+                                />
+                                <ComInput
+                                    placeholder={textApp.Reissue.placeholder.password2}
+                                    label={textApp.Reissue.label.password2}
+                                    type="password"
+                                    maxLength={26}
+                                    {...register("password2")}
+                                    required
+                                />
+                                <ComInput
+                                    placeholder={"Vui lòng nhập địa chỉ cửa hàng"}
+                                    label={"Địa chỉ cửa hàng"}
+                                    type="text"
+                                    // maxLength={26}
+                                    {...register("location")}
+                                    required
+                                />
+                                <ComTextArea
+                                    placeholder={"Vui lòng nhập giới thiệu về cửa hàng"}
+                                    label={"Giới thiệt về cửa hàng"}
+                                    type="text"
+                                    rows={4}
+                                    {...register("description")}
+                                    required
+                                />
+                                <h1 className="text-red-500">{error}</h1>
+                                <ComButton
+                                    disabled={disabled}
+                                    htmlType="submit"
+                                    type="primary"
+
+                                >
+                                    {textApp.Reissue.pageTitle}
+                                </ComButton>
+
+
+                            </form>
+                        </FormProvider>
+
+                        <p className="mt-10 text-center text-sm ">
+                            Chưa có tài khoản?{' '}
+                            <ComLink to={routs["/login"].link} >
+                                <>{routs["/login"].name}</>
+                            </ComLink>
+                        </p>
+                    </div>
                 </div>
-
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <FormProvider {...methods} >
-                        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-
-                            <ComInput
-                                placeholder={textApp.Reissue.placeholder.username}
-                                label={textApp.Reissue.label.username}
-                                type="text"
-                                // search
-                                maxLength={26}
-                                onchange={() => { setError("") }}
-                                {...register("username")}
-                                required
-                            />
-
-                            <ComInput
-                                placeholder={textApp.Reissue.placeholder.phone}
-                                label={textApp.Reissue.label.phone}
-                                type="numbers"
-                                maxLength={16}
-                                {...register("phone")}
-                                required
-                            />
-                            <ComInput
-                                placeholder={textApp.Reissue.placeholder.email}
-                                label={textApp.Reissue.label.email}
-                                type="text"
-                                {...register("email")}
-                                required
-                            />
-                            <ComInput
-                                placeholder={textApp.Reissue.placeholder.password}
-                                label={textApp.Reissue.label.password}
-                                type="password"
-                                maxLength={26}
-                                {...register("password")}
-                                required
-                            />
-                            <ComInput
-                                placeholder={textApp.Reissue.placeholder.password2}
-                                label={textApp.Reissue.label.password2}
-                                type="password"
-                                maxLength={26}
-                                {...register("password2")}
-                                required
-                            />
-                            <h1 className="text-red-500">{error}</h1>
-                            <ComButton
-                                disabled={disabled}
-                                htmlType="submit"
-                                type="primary"
-                                
-                            >
-                                {textApp.Reissue.pageTitle} 
-                            </ComButton>
-
-
-                        </form>
-                    </FormProvider>
-
-                    <p className="mt-10 text-center text-sm text-gray-500">
-                        Chưa có tài khoản?{' '}
-                        <ComLink to={routs["/login"].link} >
-                            <>{routs["/login"].name}</>
-                        </ComLink>
-                    </p>
-                </div>
+                <ComFooter />
             </div>
-            <ComFooter />
-
         </>
     )
 

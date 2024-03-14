@@ -208,7 +208,7 @@ export const textApp = {
         contact: {
             title: "Thông tin liên hệ",
             adress: "Địa chỉ: LôE2a Đường D1, Thành phố Thủ Đức",
-            email: "Email: banlongchim@gmail.com",
+            email: "Email: toannv72@gmail.com",
             phone: "Số điện thoại: (0123) 456-7890",
         },
 

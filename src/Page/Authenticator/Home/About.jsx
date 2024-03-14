@@ -26,15 +26,11 @@ export default function About() {
                     </div>
                     <div >
                         <p className="font-medium text-4xl">Business Goals</p>
-                        <p>The app's primary goal is to offer a comprehensive
-                            platform that simplifies pet care while fostering a
-                            sense of community among pet lovers.</p>
+                        <p>The target audience encompasses a wide range of pet owners, from young adults adopting their first pet to seniors with long­time companions, locating in all over VietNam</p>
                     </div>
                     <div >
                         <p className="font-medium text-4xl">Business Goals</p>
-                        <p>The app's primary goal is to offer a comprehensive
-                            platform that simplifies pet care while fostering a
-                            sense of community among pet lovers.</p>
+                        <p>The design preferences highlight a desire for a user-friendly and visually appealing opp, emphasizing accessibility, simplicity and ease of use. </p>
                     </div>
                     <div className="flex gap-8 ">
                         <button className="bg-[#3A3F65] text-2xl p-4 rounded-lg border-2 w-72 border-zinc-50">Get Started</button>
