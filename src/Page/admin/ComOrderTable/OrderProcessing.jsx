@@ -12,9 +12,10 @@ import { deleteData, getData, putData } from '../../../api/api';
 import ComButton from '../../Components/ComButton/ComButton';
 
 import moment from 'moment/moment';
+import { useStorage } from '../../../hooks/useLocalStorage';
 
 
-export default function OrderProcessing({ activeTab }) {
+export default function OrderPending({ activeTab }) {
     const [disabled, setDisabled] = useState(false);
     const [order, setOrder] = useState([]);
     const [isModalOpenProcessing, setIsModalOpenProcessing] = useState(false);
@@ -24,7 +25,6 @@ export default function OrderProcessing({ activeTab }) {
     const [dataRun, setDataRun] = useState(false);
     const [orderRequestDefault, setOrderRequestDefault] = useState({});
     const [api, contextHolder] = notification.useNotification();
-    const [selectedMaterials, setSelectedMaterials] = useState();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -32,8 +32,8 @@ export default function OrderProcessing({ activeTab }) {
     const [products, setProducts] = useState([]);
     const [orderDetail, setOrderDetail] = useState({});
     const [orderModalDetail, setModalOrderDetail] = useState(false);
+    const [token, setToken] = useStorage("user", {});
 
-    console.log(order);
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
 
@@ -153,8 +153,7 @@ export default function OrderProcessing({ activeTab }) {
         handleCancelCanceledS()
     }
     useEffect(() => {
-      
-            getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
+            getData(`/appointment/getByProvider/${token?.data?.providerId}?status=COMPLETED`, {})
                 .then((data) => {
                     setOrder(data?.data)
                 })
@@ -163,6 +162,23 @@ export default function OrderProcessing({ activeTab }) {
                 });
 
     }, [dataRun, activeTab]);
+    const getDataAndSetOrder = () => {
+        getData(`/appointment/getByProvider/${token?.data?.providerId}?status=COMPLETED`, {})
+            .then((data) => {
+                setOrder(data?.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching items:", error);
+            });
+    };
+
+    useEffect(() => {
+        const intervalId = setInterval(getDataAndSetOrder, 3000); // 10 giây
+
+        // Xóa interval khi component unmount hoặc khi dependencies thay đổi
+        return () => clearInterval(intervalId);
+    }, []); // dependencies rỗng, sẽ chỉ được gọi một lần khi component mount
+
 
 
     const getColumnSearchProps = (dataIndex, title) => ({
@@ -299,9 +315,9 @@ export default function OrderProcessing({ activeTab }) {
         },
         {
             title: 'Ngày đặt ',
-            dataIndex: 'createdAt',
+            dataIndex: 'bookingDate',
             width: 110,
-            key: 'createdAt',
+            key: 'bookingDate',
             sorter: (a, b) => moment(a.bookingDate).unix() - moment(b.bookingDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày đặt hàng"),
             render: (_, record) => (
@@ -312,15 +328,15 @@ export default function OrderProcessing({ activeTab }) {
             ),
         }, {
             title: 'Ngày làm',
-            dataIndex: 'createdAt',
-            width: 110,
-            key: 'createdAt',
-            sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            dataIndex: 'returnDate',
+            width: 210,
+            key: 'returnDate',
+            sorter: (a, b) => moment(a.returnDate).unix() - moment(b.returnDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày làm"),
             render: (_, record) => (
 
                 <div className="text-sm text-gray-700 line-clamp-4">
-                    <p>{moment(record.returnDate).format('l')}</p>
+                    <p>{moment(record.returnDate).format('LLLL')}</p>
                 </div>
             ),
         },
@@ -373,41 +389,41 @@ export default function OrderProcessing({ activeTab }) {
         //     ),
 
         // },
-        {
-            title: 'Action',
-            key: 'operation',
-            fixed: 'right',
-            width: 150,
-            render: (_, record) => (
+        // {
+        //     title: 'Action',
+        //     key: 'operation',
+        //     fixed: 'right',
+        //     width: 150,
+        //     render: (_, record) => (
 
-                <div className='flex items-center flex-col'>
-                    <div>
-                        <Typography.Link onClick={() => showModalEdit(record)}>
-                            Chấp nhận
-                        </Typography.Link>
-                    </div>
-                    {/* <div className='mt-2'>
-                        <Typography.Link onClick={() => handleOpenCanceled(record)}>
-                            <div className='text-red-600'>hủy</div>
-                        </Typography.Link>
-                    </div> */}
-                </div>
-            )
-        },
+        //         <div className='flex items-center flex-col'>
+        //             <div>
+        //                 <Typography.Link onClick={() => showModalEdit(record)}>
+        //                     Xác nhận
+        //                 </Typography.Link>
+        //             </div>
+        //             {/* <div className='mt-2'>
+        //                 <Typography.Link onClick={() => handleOpenCanceled(record)}>
+        //                     <div className='text-red-600'>hủy</div>
+        //                 </Typography.Link>
+        //             </div> */}
+        //         </div>
+        //     )
+        // },
     ];
 
 
     return (
         <>
             {contextHolder}
-            <div className='flex gap-2'>
+            {/* <div className='flex gap-2'>
                 <Button
                     disabled={disabled}
                     type="primary"
                     onClick={() => setIsModalOpenProcessingS(true)}
                     className={`flex  items-center justify-center rounded-md border border-transparent text-base font-medium text-white ${disabled ? " bg-slate-700" : "hover:to-sky-700 hover:from-sky-800 bg-gradient-to-b from-sky-600 to-sky-700"}  `}
                 >
-                    Chấp nhận
+                    Xác nhận
                 </Button>
                 <Button
                     disabled={disabled}
@@ -417,13 +433,13 @@ export default function OrderProcessing({ activeTab }) {
                 >
                     Từ chối
                 </Button>
-            </div>
+            </div> */}
             <div className='flex p-2 justify-center'>
                 <Table
-                    rowSelection={{
-                        type: "checkbox",
-                        ...rowSelection,
-                    }}
+                    // rowSelection={{
+                    //     type: "checkbox",
+                    //     ...rowSelection,
+                    // }}
                     rowKey="_id"
                     columns={columns}
                     dataSource={order}

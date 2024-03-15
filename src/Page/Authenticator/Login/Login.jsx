@@ -33,11 +33,8 @@ export default function Login() {
         // email: yup.string().email('định dạng sai').required('Login ID is required email'),
     })
     const LoginRequestDefault = {
-        // code: "",
         password: "",
         username: "",
-        // email: "",
-
     };
     const methods = useForm({
         resolver: yupResolver(loginMessenger),
@@ -49,44 +46,43 @@ export default function Login() {
     })
     const { handleSubmit, register, setFocus, watch, setValue } = methods
     const onSubmit = (data) => {
-        navigate('/staff/product/table')
+        // navigate('/staff/product/table')
         setLoginError(false)
         setLogin(false)
         setDisabled(true)
-        postData('/login', data, {})
-            .then((data) => {
-                console.log(data);
-                localStorage.setItem('user', JSON.stringify(data));
-                setToken(data)
-                setDisabled(false)
-                // navigate('/')
-                if (location?.state) {
-                    return navigate(location?.state)
-                }
-                if (data._doc.role === 'user') {
-                    return navigate('/')
-                }
-                if (data._doc.role === 'staff') {
-                    return navigate('/staff/product/table')
-                }
-                if (data._doc.role === 'manager') {
-                    return navigate('/manager/dashboard')
-                }
-                if (data._doc.role === 'admin') {
-                    return navigate('/admin/tableUser')
-                }
-            })
-            .catch((error) => {
-                console.error("Error fetching items:", error);
-                setDisabled(false)
-                if (error?.response?.status === 401) {
-
-                    setLogin(true)
-                } else {
-                    setLoginError(true)
-
-                }
-            });
+        if (data.username==="admin"&& data.password==="12345") {
+            window.location.href = 'https://petside-ihc2-two.vercel.app/dashboard';
+            
+        } else {
+            
+            postData('/providers/LoginProvider', data, {})
+                .then((data) => {
+                    if (data.success) {
+                     
+                        localStorage.setItem('user', JSON.stringify(data));
+                        setToken(data)
+                        setDisabled(false)
+                        navigate('/staff/order')
+                    } else {
+                        setDisabled(false)
+    
+                        setLogin(true)
+                    }
+    
+    
+                })
+                .catch((error) => {
+                    console.error("Error fetching items:", error);
+                    setDisabled(false)
+                    if (error?.response?.status === 401) {
+    
+                        setLogin(true)
+                    } else {
+                        setLoginError(true)
+    
+                    }
+                });
+        }
     }
 
     return (

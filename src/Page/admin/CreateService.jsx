@@ -15,6 +15,7 @@ import ComNumber from '../Components/ComInput/ComNumber'
 import { Select, notification } from 'antd'
 import ComSelect from '../Components/ComInput/ComSelect'
 import ComHeaderStaff from '../Components/ComHeaderStaff/ComHeaderStaff'
+import { useStorage } from '../../hooks/useLocalStorage'
 
 const options = [
     {
@@ -35,6 +36,7 @@ export default function CreateService() {
     const [disabled, setDisabled] = useState(false);
     const [image, setImages] = useState('');
     const [api, contextHolder] = notification.useNotification();
+    const [token, setToken] = useStorage("user", {});
 
 
     useEffect(() => {
@@ -130,7 +132,7 @@ export default function CreateService() {
 
                 };
 
-                postData('/offers/CreateInformation?listProvider=0cb84163-3df2-4160-acd0-08dc39513829', updatedData, {})
+                postData(`/offers/CreateInformation?listProvider=${token?.data?.providerId}`, updatedData, {})
                     .then((dataS) => {
                         console.log(dataS);
                         setDisabled(false)

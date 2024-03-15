@@ -82,15 +82,23 @@ export default function Reissue() {
         }
         postData('/providers/CreateProvider', dataPost, {})
             .then((data) => {
-                api["success"]({
-                    message: 'Thành công!',
-                    description:
-                        "Đăng ký tài khoản thành công"
-                });
+                if (!data.success) {
+                    api["error"]({
+                        message: 'Thành công!',
+                        description:
+                            "Đã có tên tài khoản này rồi vui lòng đặt lại! "
+                    });
+                }else {
+                    api["success"]({
+                        message: 'Thành công!',
+                        description:
+                            "Đăng ký tài khoản thành công"
+                    });
+                    setTimeout(() => {
+                        return navigate('/login')
+                    }, 3000);
+                }
                 setDisabled(false)
-                setTimeout(() => {
-                    return navigate('/login')
-                }, 3000);
             })
             .catch((error) => {
                 setError(error?.response?.data?.error)
@@ -138,7 +146,6 @@ export default function Reissue() {
                                     label={"Tên cửa hàng"}
                                     type="text"
                                     // search
-                                    maxLength={26}
                                     {...register("providerName")}
                                     required
                                 />

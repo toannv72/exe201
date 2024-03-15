@@ -17,6 +17,7 @@ import ComNumber from '../Components/ComInput/ComNumber';
 import ComSelect from '../Components/ComInput/ComSelect';
 import moment from 'moment/moment';
 import ComHeaderStaff from '../Components/ComHeaderStaff/ComHeaderStaff';
+import { useStorage } from '../../hooks/useLocalStorage';
 
 
 export default function TableService() {
@@ -33,9 +34,11 @@ export default function TableService() {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [token, setToken] = useStorage("user", {});
+
     useEffect(() => {
         setTimeout(() => {
-            getData('/providers/getInformation/0cb84163-3df2-4160-acd0-08dc39513829', {})
+            getData(`/providers/getInformation/${token?.data?.providerId}`, {})
                 .then((data) => {
                     setProducts(data.data.data.offerProviders)
                 })
@@ -231,7 +234,7 @@ export default function TableService() {
 
     const deleteById = () => {
         setDisabled(true)
-        deleteData('/offers/offering/0cb84163-3df2-4160-acd0-08dc39513829', productRequestDefault.offerId)
+        deleteData(`/offers/offering/${token?.data?.providerId}`, productRequestDefault.offerId)
             .then((data) => {
                 setDisabled(false)
                 handleCancelDelete()

@@ -7,11 +7,12 @@ import * as yup from "yup"
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Modal, Space, Table, Tooltip, Typography, notification } from 'antd';
 import { textApp } from '../../../TextContent/textApp';
-import { deleteData, getData, putData } from '../../../api/api';
+import { deleteData, getData, patchData, putData } from '../../../api/api';
 
 import ComButton from '../../Components/ComButton/ComButton';
 
 import moment from 'moment/moment';
+import { useStorage } from '../../../hooks/useLocalStorage';
 
 
 export default function OrderPending({ activeTab }) {
@@ -31,6 +32,7 @@ export default function OrderPending({ activeTab }) {
     const [products, setProducts] = useState([]);
     const [orderDetail, setOrderDetail] = useState({});
     const [orderModalDetail, setModalOrderDetail] = useState(false);
+    const [token, setToken] = useStorage("user", {});
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -54,9 +56,7 @@ export default function OrderPending({ activeTab }) {
     };
 
     const showModalEdit = (e) => {
-        setOrderRequestDefault({
-            id: e._id
-        })
+        setOrderRequestDefault(e.appointmentId)
         setIsModalOpenProcessing(true);
 
     };
@@ -106,9 +106,15 @@ export default function OrderPending({ activeTab }) {
             setDisabled(true)
         }
     }, [selected]);
+
     const processing = () => {
-        putData('/order/admin/put', 'Processing', { orders: [orderRequestDefault.id] })
+        patchData('/appointment/completeAppointment', orderRequestDefault, {  })
             .then((e) => {
+                api["success"]({
+                    message: 'Thành công!',
+                    description:
+                        "Đã xác nhận thành công"
+                });
                 setDataRun(!dataRun);
             })
             .catch(err => console.log(err))
@@ -151,7 +157,7 @@ export default function OrderPending({ activeTab }) {
         handleCancelCanceledS()
     }
     useEffect(() => {
-            getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
+            getData(`/appointment/getByProvider/${token?.data?.providerId}?status=PENDING_CONFIRMATION`, {})
                 .then((data) => {
                     setOrder(data?.data)
                 })
@@ -161,7 +167,7 @@ export default function OrderPending({ activeTab }) {
 
     }, [dataRun, activeTab]);
     const getDataAndSetOrder = () => {
-        getData('/appointment/getByProvider/0cb84163-3df2-4160-acd0-08dc39513829', {})
+        getData(`/appointment/getByProvider/${token?.data?.providerId}?status=PENDING_CONFIRMATION`, {})
             .then((data) => {
                 setOrder(data?.data);
             })
@@ -327,7 +333,7 @@ export default function OrderPending({ activeTab }) {
         }, {
             title: 'Ngày làm',
             dataIndex: 'returnDate',
-            width: 110,
+            width: 210,
             key: 'returnDate',
             sorter: (a, b) => moment(a.returnDate).unix() - moment(b.returnDate).unix(),
             ...getColumnSearchProps('createdAt', "Ngày làm"),
@@ -364,29 +370,6 @@ export default function OrderPending({ activeTab }) {
                 </div>
             )
         },
-        // {
-        //     title: 'Thông tin bổ sung',
-        //     dataIndex: 'notes',
-        //     key: 'notes',
-        //     width: 300,
-        //     ...getColumnSearchProps('notes', "chi tiết"),
-        //     // render: (_, record) => (
-
-        //     //     <div className="text-sm text-gray-700 line-clamp-4">
-        //     //         <p className="text-sm text-gray-700 line-clamp-4">{record.description}</p>
-        //     //     </div>
-
-        //     // ),
-        //     ellipsis: {
-        //         showTitle: false,
-        //     },
-        //     render: (record) => (
-        //         <Tooltip placement="topLeft" title={record}>
-        //             {record}
-        //         </Tooltip>
-        //     ),
-
-        // },
         {
             title: 'Action',
             key: 'operation',
@@ -414,7 +397,7 @@ export default function OrderPending({ activeTab }) {
     return (
         <>
             {contextHolder}
-            <div className='flex gap-2'>
+            {/* <div className='flex gap-2'>
                 <Button
                     disabled={disabled}
                     type="primary"
@@ -431,13 +414,13 @@ export default function OrderPending({ activeTab }) {
                 >
                     Từ chối
                 </Button>
-            </div>
+            </div> */}
             <div className='flex p-2 justify-center'>
                 <Table
-                    rowSelection={{
-                        type: "checkbox",
-                        ...rowSelection,
-                    }}
+                    // rowSelection={{
+                    //     type: "checkbox",
+                    //     ...rowSelection,
+                    // }}
                     rowKey="_id"
                     columns={columns}
                     dataSource={order}
@@ -454,13 +437,13 @@ export default function OrderPending({ activeTab }) {
             </div>
 
 
-            <Modal title="Chấp nhận đơn hàng này"
+            <Modal title="Xác nhận hoàn thành"
                 okType="primary text-black border-gray-700"
                 open={isModalOpenProcessing}
                 width={500}
                 // style={{ top: 20 }}
                 onCancel={handleCancelProcessing}>
-                <div className='text-lg p-6'>Bạn có chắc chắn muốn chuyển qua đang sử lý hay không?</div>
+                <div className='text-lg p-6'>Bạn có chắc chắn muốn chuyển qua đã hoàn thành hay không?</div>
                 <div className='flex'>
                     <ComButton
                         type="primary"
