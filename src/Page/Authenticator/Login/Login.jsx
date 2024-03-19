@@ -87,6 +87,8 @@ export default function Login() {
 
     return (
         <div className="text-white relative isolate overflow-hidden bg-gray-900  sm:py-32">
+            <ComHeader />
+
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 pb-12 lg:px-8 ">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 style={{}} className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight Login-h2">
@@ -149,7 +151,7 @@ export default function Login() {
                     </p>
                 </div>
             </div>
-            <ComFooter />
+            {/* <ComFooter /> */}
         </div>
     )
 

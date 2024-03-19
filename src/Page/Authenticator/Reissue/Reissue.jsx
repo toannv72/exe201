@@ -113,6 +113,8 @@ export default function Reissue() {
         <>
             <div className="text-white relative isolate overflow-hidden bg-gray-900  sm:py-32">
                 {contextHolder}
+            <ComHeader />
+
                 <img
                     src={images.background}
                     alt=""
@@ -211,14 +213,14 @@ export default function Reissue() {
                         </FormProvider>
 
                         <p className="mt-10 text-center text-sm ">
-                            Chưa có tài khoản?{' '}
+                            Đã có tài khoản?{' '}
                             <ComLink to={routs["/login"].link} >
                                 <>{routs["/login"].name}</>
                             </ComLink>
                         </p>
                     </div>
                 </div>
-                <ComFooter />
+                {/* <ComFooter /> */}
             </div>
         </>
     )
