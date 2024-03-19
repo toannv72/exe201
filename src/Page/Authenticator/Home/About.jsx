@@ -1,4 +1,5 @@
 
+import { Link } from "react-router-dom";
 import images from "../../../img";
 import ComHeader from "../../Components/ComHeader/ComHeader";
 
@@ -33,9 +34,13 @@ export default function About() {
                         <p>The design preferences highlight a desire for a user-friendly and visually appealing opp, emphasizing accessibility, simplicity and ease of use. </p>
                     </div>
                     <div className="flex gap-8 ">
-                        <button className="bg-[#3A3F65] text-2xl p-4 rounded-lg border-2 w-72 border-zinc-50">Get Started</button>
-                        <button className="bg-transparent text-2xl p-4 rounded-lg border-2 w-72 border-zinc-50">Try It Now</button>
-                    </div>
+                    <Link to={"https://www.facebook.com/Petbyyourside"}>
+                            <button className="bg-[#3A3F65] text-2xl p-4 rounded-lg border-2  border-zinc-50">Get Started</button>
+                        </Link>
+                        <Link to={"https://www.facebook.com/Petbyyourside"}>
+                        <button className="bg-transparent text-2xl p-4 rounded-lg border-2  border-zinc-50">Try It Now</button>
+                        </Link>
+                        </div>
                 </div>
 
             </div>
