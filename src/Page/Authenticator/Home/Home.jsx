@@ -33,7 +33,7 @@ export default function Home() {
                     </div>
 
                     <div className="flex gap-8 ">
-                        <Link to={"https://www.facebook.com/Petbyyourside"}>
+                        <Link to={"https://drive.google.com/drive/u/0/folders/1lAqEDVLjxR0-T5te2nDCPRxjemWuNI36"}>
                             <button className="bg-[#3A3F65] text-2xl p-4 rounded-lg border-2  border-zinc-50">Get Started</button>
                         </Link>
                         <Link to={"https://www.facebook.com/Petbyyourside"}>

@@ -23,7 +23,7 @@ export default function ComHeader({ dataCart, updateCart }) {
 
         
         <div className="flex gap-2">
-        <button className="bg-[#3A3F65] text-2xl p-4 rounded-full ">Download</button>
+        <Link to={'https://drive.google.com/drive/u/0/folders/1lAqEDVLjxR0-T5te2nDCPRxjemWuNI36'} className="bg-[#3A3F65] text-2xl p-4 rounded-full ">Download</Link>
         <Link to={'/login'} className="bg-[#3A3F65] text-2xl p-4 rounded-full ">Login</Link>
        
         </div>
